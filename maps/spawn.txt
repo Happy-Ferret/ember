@@ -1,0 +1,7 @@
+# this file is automatically loaded when a New Game starts.
+# it's a dummy map to send the player to the actual starting point.
+
+[event]
+type=event
+activate=on_load
+intermap=maps/tristram.txt,75,68

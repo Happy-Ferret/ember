@@ -1,0 +1,3 @@
+description=Spark is a Diablo implementation using the FLARE engine
+requires=fantasycore,alpha_demo
+game=flare-game
