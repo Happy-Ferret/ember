@@ -10,7 +10,7 @@ The aim of this project is to get Diablo 1 running on the FLARE game engine.
 
 ## Installation
 
-Note, this game requires an original copy of `diabdat.mpq`.
+Note, this game requires an original copy of `diabdat.mpq`. None of the Diablo 1 game assets are provided by this project.
 
 ### Install FLARE engine
 
