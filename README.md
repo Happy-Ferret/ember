@@ -22,7 +22,7 @@ pacman -S sdl2 sdl2_image sdl2_mixer sdl2_ttf
 git clone https://github.com/clintbellanger/flare-engine
 git clone https://github.com/clintbellanger/flare-game
 
-# Clone the Spark game
+# Clone the Spark game.
 git clone https://github.com/sanctuary/spark
 
 # Build FLARE engine.
@@ -52,7 +52,11 @@ cd _assets_
 
 # Extract diabdat.mpq to the "_assets_/mpqdump" directory.
 #
-# Note, you may use Ladislav Zezula's MPQ Editor to extract the contents of diabdat.mpq.
+# #############################################################
+# ### NOTE: This step requires manual intervention for now. ###
+# #############################################################
+#
+# You may use Ladislav Zezula's MPQ Editor to extract the contents of diabdat.mpq.
 
 # Extract game assets. Takes roughly 5 minutes.
 opensourceami -o extract_assets.sh
