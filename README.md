@@ -25,8 +25,13 @@ git clone https://github.com/clintbellanger/flare-game
 # Clone the Spark game
 git clone https://github.com/sanctuary/spark
 
+# Build FLARE engine.
+cd flare-engine
+cmake .
+make
+
 # Add symlinks to default, fantasycore and alpha_demo mods.
-cd spark/mods
+cd ../spark/mods
 ln -s ../../flare-engine/mods/default
 ln -s ../../flare-game/mods/fantasycore
 ln -s ../../flare-game/mods/alpha_demo
