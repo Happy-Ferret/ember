@@ -1,0 +1,8 @@
+# use mouse to move (experimental). 1 enable, 0 disable.
+mouse_move=1
+
+# allow opening the developer console. 1 enable, 0 disable
+dev_mode=1
+
+# shows some additional information on-screen when developer mode is enabled. 1 enable, 0 disable
+dev_hud=0

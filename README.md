@@ -67,11 +67,9 @@ cd ..
 ### Run the game
 
 ```bash
-# Standing in the spark directory, run `./flare` and navigate to the
-# Configuration menu, the Mods tab, and enable the spark mod.
-#
-# Now you may launch Spark by pressing Play Game.
-./flare
+# Standing in the spark directory, run `./flare --mods=spark`
+# to start the game.
+./flare --mods=spark
 ```
 
 ## Public domain
