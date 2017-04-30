@@ -86,6 +86,10 @@ time min_dump town.min l1.min l2.min l3.min l4.min
 # Generate the tileset for Tristram.
 mkdir -p ../mods/spark/images/tilesets
 montage _dump_/_pillars_/town/pillar_*.png -background none -tile x16 -geometry 64x256 ../mods/spark/images/tilesets/tileset_town.png
+montage _dump_/_pillars_/l1/pillar_*.png -background none -tile x16 -geometry 64x160 ../mods/spark/images/tilesets/tileset_l1.png
+montage _dump_/_pillars_/l2/pillar_*.png -background none -tile x16 -geometry 64x160 ../mods/spark/images/tilesets/tileset_l2.png
+montage _dump_/_pillars_/l3/pillar_*.png -background none -tile x16 -geometry 64x160 ../mods/spark/images/tilesets/tileset_l3.png
+montage _dump_/_pillars_/l4/pillar_*.png -background none -tile x16 -geometry 64x256 ../mods/spark/images/tilesets/tileset_l4.png
 
 # Generate the music for Tristram.
 mkdir -p ../mods/spark/music
