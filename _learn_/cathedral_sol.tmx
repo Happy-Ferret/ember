@@ -6,10 +6,10 @@
   <property name="title" value="Cathedral"/>
  </properties>
  <tileset firstgid="1" name="collision" tilewidth="64" tileheight="32">
-  <image source="../tiled_collision.png" width="512" height="160"/>
+  <image source="../tiled/tiled_collision.png" width="512" height="160"/>
  </tileset>
  <tileset firstgid="41" name="cathedral" tilewidth="64" tileheight="160">
-  <image source="../../mods/spark/images/tilesets/tileset_cathedral.png" width="1856" height="2560"/>
+  <image source="../mods/spark/images/tilesets/tileset_cathedral.png" width="1856" height="2560"/>
  </tileset>
  <layer name="background" width="112" height="112">
   <data encoding="csv">
