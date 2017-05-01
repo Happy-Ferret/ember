@@ -7,6 +7,9 @@ The aim of this project is to get Diablo 1 running on the FLARE game engine.
 * [x] Convert map to TMX format.
     - [x] Tristram
     - [x] Cathedral
+    - [ ] Catacombs
+    - [ ] Caves
+    - [ ] Hell
 
 ![Tristram](http://oi65.tinypic.com/juk2ed.jpg)
 
