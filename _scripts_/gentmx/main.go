@@ -227,33 +227,36 @@ func solid(sol []byte, dpieceID int32) int {
 	}
 	col := sol[dpieceID-1]
 	const (
-		col01 = 0x01 // block
-		col02 = 0x02 // lighting something
-		col04 = 0x04 // missile something
-		col08 = 0x08 // transparency
-		col10 = 0x10 // vertical wall
-		col20 = 0x20 // horizontal wall
-		col40 = 0x40
-		col80 = 0x80 // object something
+		solBlockWalk    = 0x01 // block walk
+		sol02           = 0x02 // lighting?
+		solBlockMissile = 0x04 // block missile
+		sol08           = 0x08 // transparency?
+		sol10           = 0x10 // sw wall
+		sol20           = 0x20 // se wall
+		sol40           = 0x40
+		sol80           = 0x80 // fit shrine
 	)
 
 	switch {
 	// prioritize block movement over block all.
-	case col&col04 != 0:
-		return BLOCKS_MOVEMENT
-	case col&col01 != 0:
+	case col&solBlockWalk != 0:
+		if col&solBlockMissile != 0 {
+			return BLOCKS_ALL
+		}
 		return BLOCKS_ALL
-	//case col&col02 != 0:
+	case col&solBlockMissile != 0:
+		return BLOCKS_MOVEMENT
+	//case col&sol02 != 0:
 	//	return 2
-	//case col&col08 != 0:
+	//case col&sol08 != 0:
 	//	return 4
-	//case col&col10 != 0:
+	//case col&sol10 != 0:
 	//	return 5
-	//case col&col20 != 0:
+	//case col&sol20 != 0:
 	//	return 6
-	//case col&col40 != 0:
+	//case col&sol40 != 0:
 	//	return 7
-	//case col&col80 != 0:
+	//case col&sol80 != 0:
 	//	return 8
 	default:
 		return 0

@@ -5,13 +5,34 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
+	"path/filepath"
+
+	"github.com/decomp/exp/bin"
+	"github.com/mewkiz/pkg/osutil"
+)
+
+// Command file flags.
+var (
+	// mpqDir specifies the path to an extracted "diabdat.mpq".
+	mpqDir string
+	mask   bin.Uint64
 )
 
 func main() {
-	sol, err := ioutil.ReadFile("town.sol")
+	// Parse command line flags.
+	flag.StringVar(&mpqDir, "mpqdir", "diabdat", `path to extracted "diabdat.mpq"`)
+	flag.Var(&mask, "mask", "solid collision mask")
+	flag.Parse()
+	if !osutil.Exists(mpqDir) {
+		log.Fatalf("unable to locate %q directory", mpqDir)
+	}
+
+	solPath := filepath.Join(mpqDir, "levels", "towndata", "town.sol")
+	sol, err := ioutil.ReadFile(solPath)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -19,45 +40,8 @@ func main() {
 		if i != 0 && i%96 == 0 {
 			fmt.Println()
 		}
-		if tileID == 0 {
-			// TODO: set collision later.
-			fmt.Print("8,")
-			continue
-		}
-		collision := sol[tileID-1]
-		const (
-			col1 = 0x01
-			col2 = 0x02
-			col4 = 0x04
-			col8 = 0x08
-		)
-
-		switch collision {
-		case 0x01:
-			fmt.Print("1,")
-		case 0x02:
-			fmt.Print("2,")
-		case 0x03:
-			fmt.Print("3,")
-		case 0x05:
-			fmt.Print("4,")
-		case 0x0A:
-			fmt.Print("5,")
-		case 0x0E:
-			fmt.Print("6,")
-		case 0x0F:
-			fmt.Print("7,")
-		default:
-			fmt.Print("0,")
-		}
-		//if collision&col1 != 0 {
-		//}
-		//if collision&col2 != 0 {
-		//}
-		//if collision&col4 != 0 {
-		//}
-		//if collision&col8 != 0 {
-		//}
+		col := solid(sol, tileID)
+		fmt.Printf("%d,", col)
 	}
 	fmt.Println()
 }
@@ -159,4 +143,55 @@ var tileIDs = []int{
 	233, 234, 225, 226, 229, 230, 233, 234, 219, 28, 233, 234, 233, 234, 219, 28, 225, 226, 229, 230, 219, 28, 233, 234, 19, 20, 233, 234, 233, 234, 284, 285, 292, 293, 225, 226, 229, 230, 23, 24, 219, 28, 19, 20, 225, 226, 229, 230, 233, 234, 229, 230, 27, 28, 233, 234, 225, 226, 229, 230, 233, 234, 23, 24, 233, 234, 225, 226, 229, 230, 233, 234, 23, 24, 225, 226, 229, 230, 19, 20, 23, 24, 284, 285, 292, 293, 225, 226, 229, 230, 233, 234, 7, 8, 23, 113,
 	224, 26, 227, 228, 231, 232, 220, 221, 222, 22, 224, 26, 227, 228, 231, 232, 231, 232, 224, 26, 227, 228, 223, 26, 218, 26, 224, 26, 227, 228, 1166, 279, 286, 287, 220, 221, 231, 232, 224, 26, 227, 228, 231, 232, 224, 26, 227, 228, 227, 228, 231, 232, 224, 26, 227, 228, 231, 232, 222, 22, 224, 26, 227, 228, 218, 26, 220, 221, 231, 232, 224, 26, 227, 228, 223, 26, 220, 221, 224, 26, 227, 228, 1166, 279, 286, 287, 223, 26, 218, 26, 220, 221, 109, 18, 222, 22,
 	225, 226, 229, 230, 233, 234, 19, 20, 23, 24, 225, 226, 229, 230, 233, 234, 233, 234, 225, 226, 229, 230, 27, 28, 219, 28, 225, 226, 229, 230, 1167, 1168, 288, 289, 19, 20, 233, 234, 225, 226, 229, 230, 233, 234, 225, 226, 229, 230, 229, 230, 233, 234, 225, 226, 229, 230, 233, 234, 23, 24, 225, 226, 229, 230, 219, 28, 19, 20, 233, 234, 225, 226, 229, 230, 27, 28, 19, 20, 225, 226, 229, 230, 1167, 1168, 288, 289, 27, 28, 219, 28, 19, 20, 19, 110, 23, 24,
+}
+
+const (
+	BLOCKS_NONE            = 0
+	BLOCKS_ALL             = 1 // block all
+	BLOCKS_MOVEMENT        = 2 // block movement
+	BLOCKS_ALL_HIDDEN      = 3 // block all (not visible on mini map)
+	BLOCKS_MOVEMENT_HIDDEN = 4 // block movement (not visible on mini map)
+)
+
+func solid(sol []byte, dpieceID int) int {
+	if dpieceID == 0 {
+		// TODO: set collision later.
+		return BLOCKS_ALL
+	}
+	col := sol[dpieceID-1]
+	const (
+		solBlockWalk    = 0x01 // block walk
+		sol02           = 0x02 // lighting?
+		solBlockMissile = 0x04 // block missile
+		sol08           = 0x08 // transparency?
+		sol10           = 0x10 // sw wall
+		sol20           = 0x20 // se wall
+		sol40           = 0x40
+		sol80           = 0x80 // fit shrine
+	)
+
+	switch {
+	// prioritize block movement over block all.
+	case col&solBlockWalk != 0:
+		if col&solBlockMissile != 0 {
+			return BLOCKS_ALL
+		}
+		return BLOCKS_ALL
+	case col&solBlockMissile != 0:
+		return BLOCKS_MOVEMENT
+	//case col&sol02 != 0:
+	//	return 2
+	//case col&sol08 != 0:
+	//	return 4
+	//case col&sol10 != 0:
+	//	return 5
+	//case col&sol20 != 0:
+	//	return 6
+	//case col&sol40 != 0:
+	//	return 7
+	//case col&sol80 != 0:
+	//	return 8
+	default:
+		return 0
+	}
 }
