@@ -12,6 +12,7 @@ import (
 	"math"
 	"os"
 	"path/filepath"
+	"strings"
 	"text/template"
 
 	"github.com/mewkiz/pkg/osutil"
@@ -61,28 +62,35 @@ func main() {
 		mapHeight int
 		// Tile height in pixels of each tile within the tileset.
 		tileHeight int
+		// Map title.
+		title string
 	)
 	switch dtype {
 	case "town":
 		mapWidth = 96
 		mapHeight = 96
 		tileHeight = 256
+		title = "tristram"
 	case "l1":
 		mapWidth = 112
 		mapHeight = 112
 		tileHeight = 160
+		title = "cathedral"
 	case "l2":
 		mapWidth = 112
 		mapHeight = 112
 		tileHeight = 160
+		title = "catacombs"
 	case "l3":
 		mapWidth = 112
 		mapHeight = 112
 		tileHeight = 160
+		title = "caves"
 	case "l4":
 		mapWidth = 112
 		mapHeight = 112
 		tileHeight = 256
+		title = "hell"
 	default:
 		panic(fmt.Errorf("support for dungeon type %q not yet implemented", dtype))
 	}
@@ -122,6 +130,7 @@ func main() {
 		collision[i] = make([]int, mapHeight)
 	}
 	r := bytes.NewReader(bin)
+	const firstID = 41
 	for y := 0; y < mapHeight; y++ {
 		for x := 0; x < mapWidth; x++ {
 			var v int32
@@ -130,16 +139,21 @@ func main() {
 			}
 			collision[x][y] = solid(sol, v)
 			if v != 0 {
-				background[x][y] = 100 + int(v)
+				background[x][y] = firstID + int(v-1)
 			}
 		}
 	}
-	t, err := template.New("tmx").Parse(tmxData[1:])
+	funcMap := map[string]interface{}{
+		"title": strings.Title,
+	}
+	t, err := template.New("tmx").Funcs(funcMap).Parse(tmxData[1:])
 	if err != nil {
 		log.Fatalf("%+v", errors.WithStack(err))
 	}
 	m := map[string]interface{}{
+		"Title":         title,
 		"DType":         dtype,
+		"FirstID":       firstID,
 		"MapWidth":      mapWidth,
 		"MapHeight":     mapHeight,
 		"TileHeight":    tileHeight,
@@ -154,11 +168,16 @@ func main() {
 const tmxData = `
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="isometric" width="{{ .MapWidth }}" height="{{ .MapHeight }}" tilewidth="64" tileheight="32">
+ <properties>
+  <property name="music" value="music/{{ .Title }}.ogg"/>
+  <property name="tileset" value="tilesetdefs/tileset_{{ .Title }}.txt"/>
+  <property name="title" value="{{ title .Title }}"/>
+ </properties>
  <tileset firstgid="1" name="collision" tilewidth="64" tileheight="32">
-  <image source="../tiled_collision.png" width="960" height="32"/>
+  <image source="../tiled_collision.png" width="512" height="160"/>
  </tileset>
- <tileset firstgid="101" name="{{ .DType }}" tilewidth="64" tileheight="{{ .TileHeight }}">
-  <image source="../../mods/spark/images/tilesets/tileset_{{ .DType }}.png" width="{{ .TilesetWidth }}" height="{{ .TilesetHeight }}"/>
+ <tileset firstgid="{{ .FirstID }}" name="{{ .Title }}" tilewidth="64" tileheight="{{ .TileHeight }}">
+  <image source="../../mods/spark/images/tilesets/tileset_{{ .Title }}.png" width="{{ .TilesetWidth }}" height="{{ .TilesetHeight }}"/>
  </tileset>
  <layer name="background" width="{{ .MapWidth }}" height="{{ .MapWidth }}">
   <data encoding="csv">
@@ -175,7 +194,7 @@ const tmxData = `
 {{- end }}
   </data>
  </layer>
- <layer name="collision" visible="0" width="{{ .MapWidth }}" height="{{ .MapWidth }}">
+ <layer name="collision" width="{{ .MapWidth }}" height="{{ .MapWidth }}" visible="0">
   <data encoding="csv">
 {{ range $i, $v := .Collision }}
 	{{- if ne $i 0 }}
@@ -194,6 +213,10 @@ const tmxData = `
 `
 
 func solid(sol []byte, dpieceID int32) int {
+	if dpieceID == 0 {
+		return -1
+	}
+	return int(sol[dpieceID])
 	if dpieceID == 0 {
 		// TODO: set collision later.
 		return 8

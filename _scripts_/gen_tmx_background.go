@@ -1,3 +1,5 @@
+//+build ignore
+
 // generate background layer CVS data for "tiled/town/town.tmx"
 
 package main
@@ -7,6 +9,7 @@ import (
 )
 
 func main() {
+	const firstID = 41
 	for i, tileID := range tileIDs {
 		if i != 0 && i%96 == 0 {
 			fmt.Println()
@@ -15,7 +18,7 @@ func main() {
 			fmt.Printf("0,")
 			continue
 		}
-		fmt.Printf("%d,", tileID+100)
+		fmt.Printf("%d,", firstID+tileID-1)
 	}
 	fmt.Println()
 }

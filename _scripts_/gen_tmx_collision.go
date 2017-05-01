@@ -1,3 +1,5 @@
+//+build ignore
+
 // generate collision layer CVS data for "tiled/town/town.tmx"
 
 package main
