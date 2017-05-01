@@ -8,6 +8,7 @@
 *.mpq
 *.sol
 _assets_
+_learn_
 flare
 mods/fantasycore
 mods/default

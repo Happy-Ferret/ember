@@ -212,38 +212,49 @@ const tmxData = `
 </map>
 `
 
+const (
+	BLOCKS_NONE            = 0
+	BLOCKS_ALL             = 1 // block all
+	BLOCKS_MOVEMENT        = 2 // block movement
+	BLOCKS_ALL_HIDDEN      = 3 // block all (not visible on mini map)
+	BLOCKS_MOVEMENT_HIDDEN = 4 // block movement (not visible on mini map)
+)
+
 func solid(sol []byte, dpieceID int32) int {
 	if dpieceID == 0 {
-		return -1
-	}
-	return int(sol[dpieceID])
-	if dpieceID == 0 {
 		// TODO: set collision later.
-		return 8
+		return BLOCKS_ALL
 	}
 	col := sol[dpieceID-1]
 	const (
-		col1 = 0x01
-		col2 = 0x02
-		col4 = 0x04
-		col8 = 0x08
+		col01 = 0x01 // block
+		col02 = 0x02 // lighting something
+		col04 = 0x04 // missile something
+		col08 = 0x08 // transparency
+		col10 = 0x10 // vertical wall
+		col20 = 0x20 // horizontal wall
+		col40 = 0x40
+		col80 = 0x80 // object something
 	)
 
-	switch col {
-	case 0x01:
-		return 1
-	case 0x02:
-		return 2
-	case 0x03:
-		return 3
-	case 0x05:
-		return 4
-	case 0x0A:
-		return 5
-	case 0x0E:
-		return 6
-	case 0x0F:
-		return 7
+	switch {
+	// prioritize block movement over block all.
+	case col&col04 != 0:
+		return BLOCKS_MOVEMENT
+	case col&col01 != 0:
+		return BLOCKS_ALL
+	//case col&col02 != 0:
+	//	return 2
+	//case col&col08 != 0:
+	//	return 4
+	//case col&col10 != 0:
+	//	return 5
+	//case col&col20 != 0:
+	//	return 6
+	//case col&col40 != 0:
+	//	return 7
+	//case col&col80 != 0:
+	//	return 8
 	default:
 		return 0
 	}

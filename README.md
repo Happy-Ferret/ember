@@ -4,9 +4,13 @@ The aim of this project is to get Diablo 1 running on the FLARE game engine.
 
 ## Current progress
 
-* [x] convert the map of Tristram to TMX format.
+* [x] Convert map to TMX format.
+    - [x] Tristram
+    - [x] Cathedral
 
-![Tristram](http://oi65.tinypic.com/153lbiu.jpg)
+![Tristram](http://oi65.tinypic.com/juk2ed.jpg)
+
+![Cathedral](http://oi68.tinypic.com/iof5es.jpg)
 
 ## Installation
 
