@@ -23,7 +23,7 @@ Note, this game requires an original copy of `diabdat.mpq`. None of the Diablo 1
 
 ```bash
 # Install dependencies of FLARE.
-pacman -S sdl2 sdl2_image sdl2_mixer sdl2_ttf
+pacman -S sdl2 sdl2_image sdl2_mixer sdl2_ttf cmake ffmpeg
 
 # Clone FLARE engine and game assets.
 git clone https://github.com/clintbellanger/flare-engine
