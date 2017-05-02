@@ -143,6 +143,7 @@ func main() {
 			}
 		}
 	}
+
 	funcMap := map[string]interface{}{
 		"title": strings.Title,
 	}
@@ -225,6 +226,13 @@ func solid(sol []byte, dpieceID int32) int {
 		// TODO: set collision later.
 		return BLOCKS_ALL
 	}
+	if isL1Door(dpieceID) {
+		// TODO: Handle doors by replacing their tiles with open doors, and adding
+		// interactable objects (with their own collision) to display the doors.
+
+		// Return 0 to skip collision for now.
+		return 0
+	}
 	col := sol[dpieceID-1]
 	const (
 		solBlockWalk    = 0x01 // block walk
@@ -261,4 +269,15 @@ func solid(sol []byte, dpieceID int32) int {
 	default:
 		return 0
 	}
+}
+
+func isL1Door(dpieceID int32) bool {
+	if dpieceID == 0 {
+		return false
+	}
+	switch dpieceID - 1 {
+	case 43, 45, 50, 55, 213, 392, 394, 407:
+		return true
+	}
+	return false
 }
