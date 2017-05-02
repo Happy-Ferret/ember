@@ -1,6 +1,12 @@
 # use mouse to move (experimental). 1 enable, 0 disable.
 mouse_move=1
 
+# allow changing gamma (experimental). 1 enable, 0 disable.
+change_gamma=1
+
+# screen gamma (0.5 = darkest, 2.0 = lightest)
+gamma=0.5
+
 # allow opening the developer console. 1 enable, 0 disable
 dev_mode=1
 
