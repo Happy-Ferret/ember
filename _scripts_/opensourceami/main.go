@@ -83,9 +83,9 @@ if [ ! -d "_dump_" ]; then
 	time min_dump -a
 fi
 
-# Draw arches onto Cathedral dungeon pieces.
-echo "Draw arches onto Cathedral dungeon pieces."
-# TODO: Not yet implemented.
+# Draw arches onto tileset dungeon pieces.
+echo "Draw arches onto tileset dungeon pieces."
+fixarches
 
 # Generate tilesets.
 echo "Generate tilesets."

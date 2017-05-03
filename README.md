@@ -51,7 +51,7 @@ ln -s ../flare-engine/flare
 ```bash
 # Get assets conversion tools.
 go get github.com/sanctuary/formats/...
-go get github.com/sanctuary/spark/_scripts_/opensourceami
+go get github.com/sanctuary/spark/_scripts_/...
 
 # Create "spark/_assets_" directory.
 mkdir _assets_
