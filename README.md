@@ -22,7 +22,7 @@ Note, this game requires an original copy of `diabdat.mpq`. None of the Diablo 1
 ### Install FLARE engine
 
 ```bash
-# Install dependencies of FLARE.
+# Install dependencies of FLARE and the conversion scripts.
 pacman -S sdl2 sdl2_image sdl2_mixer sdl2_ttf cmake ffmpeg
 
 # Clone FLARE engine and game assets.
@@ -50,22 +50,23 @@ ln -s ../flare-engine/flare
 
 ```bash
 # Get assets conversion tools.
-go get github.com/mewrnd/blizzconv/...
+go get github.com/sanctuary/formats/...
 go get github.com/sanctuary/spark/_scripts_/opensourceami
 
 # Create "spark/_assets_" directory.
 mkdir _assets_
 cd _assets_
 
-# Extract diabdat.mpq to the "_assets_/mpqdump" directory.
+# Extract diabdat.mpq to the "_assets_/diabdat" directory.
 #
 # #############################################################
 # ### NOTE: This step requires manual intervention for now. ###
 # #############################################################
 #
-# You may use Ladislav Zezula's MPQ Editor to extract the contents of diabdat.mpq.
+# You may use Ladislav Zezula's MPQ Editor to extract the
+# contents of diabdat.mpq.
 
-# Extract game assets. Takes roughly 5 minutes.
+# Extract game assets. Takes roughly 15 minutes.
 opensourceami -o extract_assets.sh
 ./extract_assets.sh
 cd ..

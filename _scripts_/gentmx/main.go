@@ -7,6 +7,7 @@ import (
 	"encoding/binary"
 	"flag"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"math"
@@ -40,9 +41,12 @@ func main() {
 		dtype string
 		// mpqDir specifies the path to an extracted "diabdat.mpq".
 		mpqDir string
+		// output specifies the output path.
+		output string
 	)
 	flag.StringVar(&dtype, "dtype", "l1", "dungeon type (town, l1, l2, l3 or l4)")
 	flag.StringVar(&mpqDir, "mpqdir", "diabdat", `path to extracted "diabdat.mpq"`)
+	flag.StringVar(&output, "o", "", "output path")
 	flag.Usage = usage
 	flag.Parse()
 	if flag.NArg() != 1 {
@@ -54,43 +58,77 @@ func main() {
 		log.Fatalf("unable to locate %q directory", mpqDir)
 	}
 
-	// Determine dungeon type specific metrics.
+	// Create output file if specified by `-o`.
+	w := os.Stdout
+	if len(output) > 0 {
+		f, err := os.Create(output)
+		if err != nil {
+			log.Fatalf("unable to create %q; %v", output, err)
+		}
+		defer f.Close()
+		w = f
+	}
+
+	// Generate TMX map.
+	if err := gentmx(w, binPath, dtype, mpqDir); err != nil {
+		log.Fatalf("%+v", err)
+	}
+}
+
+// gentmx generates a TMX map for the specified dungeon type, based on the
+// dungeon pieces contained within the given file.
+func gentmx(w io.Writer, binPath, dtype, mpqDir string) error {
+	// Determine dungeon type specific properties.
 	var (
 		// Map width in number of cels.
 		mapWidth int
 		// Map height in number of cels
 		mapHeight int
-		// Tile height in pixels of each tile within the tileset.
-		tileHeight int
 		// Map title.
 		title string
+		// Name of tileset.
+		tileset string
+		// Number of tiles per row in tileset.
+		ntilesPerRow int
+		// Tile height in pixels of each tile within the tileset.
+		tileHeight int
 	)
 	switch dtype {
 	case "town":
 		mapWidth = 96
 		mapHeight = 96
-		tileHeight = 256
 		title = "tristram"
+		tileset = "tileset_tristram"
+		ntilesPerRow = 64
+		tileHeight = 256
 	case "l1":
 		mapWidth = 112
 		mapHeight = 112
-		tileHeight = 160
 		title = "cathedral"
+		tileset = "tileset_cathedral_theme_1"
+		ntilesPerRow = 32
+		tileHeight = 160
 	case "l2":
 		mapWidth = 112
 		mapHeight = 112
-		tileHeight = 160
 		title = "catacombs"
+		tileset = "tileset_catacombs_theme_1"
+		ntilesPerRow = 32
+		tileHeight = 160
 	case "l3":
 		mapWidth = 112
 		mapHeight = 112
-		tileHeight = 160
 		title = "caves"
+		tileset = "tileset_caves_theme_1"
+		ntilesPerRow = 32
+		tileHeight = 160
 	case "l4":
 		mapWidth = 112
 		mapHeight = 112
-		tileHeight = 256
 		title = "hell"
+		tileset = "tileset_hell_theme_1"
+		ntilesPerRow = 32
+		tileHeight = 256
 	default:
 		panic(fmt.Errorf("support for dungeon type %q not yet implemented", dtype))
 	}
@@ -98,29 +136,29 @@ func main() {
 	// Parse file containing sequence of dungeon pieces (i.e. miniture tiles).
 	bin, err := ioutil.ReadFile(binPath)
 	if err != nil {
-		log.Fatalf("%+v", errors.WithStack(err))
+		return errors.WithStack(err)
 	}
 	got := len(bin)
 	want := 4 * mapWidth * mapHeight
 	if got != want {
-		log.Fatalf("mismatch between number of dungeon pieces and dungeon size %dx%d; expected %d, got %d", mapWidth, mapHeight, want, got)
+		return errors.Errorf("mismatch between number of dungeon pieces and dungeon size %dx%d; expected %d, got %d", mapWidth, mapHeight, want, got)
 	}
 
 	// Parse SOL file.
-	dtypeDataDir := fmt.Sprintf("%sdata", dtype)
-	solName := fmt.Sprintf("%s.sol", dtype)
-	solPath := filepath.Join(mpqDir, "levels", dtypeDataDir, solName)
+	relSolPath := fmt.Sprintf("levels/%sdata/%s.sol", dtype, dtype)
+	solPath := filepath.Join(mpqDir, relSolPath)
 	sol, err := ioutil.ReadFile(solPath)
 	if err != nil {
-		log.Fatalf("%+v", errors.WithStack(err))
+		return errors.WithStack(err)
 	}
 
 	// Number of dungeon pieces contained within <dtype>.MIN
 	ndpieces := len(sol)
 	// Tileset width in pixels.
-	tilesetWidth := 64 * int(math.Ceil(float64(ndpieces)/16))
+	const tileWidth = 64
+	tilesetWidth := tileWidth * ntilesPerRow
 	// Tileset height in pixels.
-	tilesetHeight := tileHeight * 16
+	tilesetHeight := tileHeight * int(math.Ceil(float64(ndpieces)/float64(ntilesPerRow)))
 	background := make([][]int, mapWidth)
 	for i := range background {
 		background[i] = make([]int, mapHeight)
@@ -133,13 +171,13 @@ func main() {
 	const firstID = 41
 	for y := 0; y < mapHeight; y++ {
 		for x := 0; x < mapWidth; x++ {
-			var v int32
-			if err := binary.Read(r, binary.LittleEndian, &v); err != nil {
-				log.Fatalf("%+v", errors.WithStack(err))
+			var dpieceID int32
+			if err := binary.Read(r, binary.LittleEndian, &dpieceID); err != nil {
+				return errors.WithStack(err)
 			}
-			collision[x][y] = solid(sol, v)
-			if v != 0 {
-				background[x][y] = firstID + int(v-1)
+			collision[x][y] = solid(sol, dpieceID)
+			if dpieceID != 0 {
+				background[x][y] = firstID - 1 + int(dpieceID)
 			}
 		}
 	}
@@ -149,21 +187,24 @@ func main() {
 	}
 	t, err := template.New("tmx").Funcs(funcMap).Parse(tmxData[1:])
 	if err != nil {
-		log.Fatalf("%+v", errors.WithStack(err))
+		return errors.WithStack(err)
 	}
 	m := map[string]interface{}{
-		"Title":         title,
-		"DType":         dtype,
-		"FirstID":       firstID,
 		"MapWidth":      mapWidth,
 		"MapHeight":     mapHeight,
+		"Title":         title,
+		"Tileset":       tileset,
+		"FirstID":       firstID,
 		"TileHeight":    tileHeight,
 		"TilesetWidth":  tilesetWidth,
 		"TilesetHeight": tilesetHeight,
 		"Background":    background,
 		"Collision":     collision,
 	}
-	t.Execute(os.Stdout, m)
+	if err := t.Execute(w, m); err != nil {
+		return errors.WithStack(err)
+	}
+	return nil
 }
 
 const tmxData = `
@@ -171,14 +212,14 @@ const tmxData = `
 <map version="1.0" orientation="isometric" width="{{ .MapWidth }}" height="{{ .MapHeight }}" tilewidth="64" tileheight="32">
  <properties>
   <property name="music" value="music/{{ .Title }}.ogg"/>
-  <property name="tileset" value="tilesetdefs/tileset_{{ .Title }}.txt"/>
+  <property name="tileset" value="tilesetdefs/{{ .Tileset }}.txt"/>
   <property name="title" value="{{ title .Title }}"/>
  </properties>
  <tileset firstgid="1" name="collision" tilewidth="64" tileheight="32">
   <image source="../tiled_collision.png" width="512" height="160"/>
  </tileset>
  <tileset firstgid="{{ .FirstID }}" name="{{ .Title }}" tilewidth="64" tileheight="{{ .TileHeight }}">
-  <image source="../../mods/spark/images/tilesets/tileset_{{ .Title }}.png" width="{{ .TilesetWidth }}" height="{{ .TilesetHeight }}"/>
+  <image source="../../mods/spark/images/tilesets/{{ .Tileset }}.png" width="{{ .TilesetWidth }}" height="{{ .TilesetHeight }}"/>
  </tileset>
  <layer name="background" width="{{ .MapWidth }}" height="{{ .MapWidth }}">
   <data encoding="csv">
@@ -275,8 +316,8 @@ func isL1Door(dpieceID int32) bool {
 	if dpieceID == 0 {
 		return false
 	}
-	switch dpieceID - 1 {
-	case 43, 45, 50, 55, 213, 392, 394, 407:
+	switch dpieceID {
+	case 44, 46, 51, 56, 214, 393, 395, 408:
 		return true
 	}
 	return false

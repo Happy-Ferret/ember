@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"math"
 	"os"
 	"path/filepath"
 
@@ -48,25 +47,32 @@ func main() {
 	var (
 		// Tile height in pixels of each tile within the tileset.
 		tileHeight int
-		// Tileset title.
-		title string
+		// Name of tileset.
+		tileset string
+		// Number of tiles per row in tileset.
+		ntilesPerRow int
 	)
 	switch dtype {
 	case "town":
 		tileHeight = 256
-		title = "tristram"
+		tileset = "tileset_tristram"
+		ntilesPerRow = 64
 	case "l1":
 		tileHeight = 160
-		title = "cathedral"
+		tileset = "tileset_cathedral_theme_1"
+		ntilesPerRow = 32
 	case "l2":
 		tileHeight = 160
-		title = "catacombs"
+		tileset = "tileset_catacombs_theme_1"
+		ntilesPerRow = 32
 	case "l3":
 		tileHeight = 160
-		title = "caves"
+		tileset = "tileset_caves_theme_1"
+		ntilesPerRow = 32
 	case "l4":
 		tileHeight = 256
-		title = "hell"
+		tileset = "tileset_hell_theme_1"
+		ntilesPerRow = 32
 	default:
 		panic(fmt.Errorf("support for dungeon type %q not yet implemented", dtype))
 	}
@@ -83,15 +89,17 @@ func main() {
 	// Number of dungeon pieces contained within <dtype>.MIN
 	ndpieces := len(sol)
 
-	fmt.Printf("img=images/tilesets/tileset_%s.png\n\n", title)
+	fmt.Printf("img=images/tilesets/%s.png\n\n", tileset)
 	x, y := 0, 0
-	n := int(math.Ceil(float64(ndpieces) / 16))
-	const firstID = 41
-	for i := 0; i < ndpieces; i++ {
-		id := firstID + i
-		fmt.Printf("tile=%d,%d,%d,64,%d,32,%d\n", id, x*64, y*tileHeight, tileHeight, tileHeight-16)
+	const (
+		firstID   = 41
+		tileWidth = 64
+	)
+	for dpieceID := 1; dpieceID <= ndpieces; dpieceID++ {
+		id := firstID - 1 + dpieceID
+		fmt.Printf("tile=%d,%d,%d,64,%d,32,%d\n", id, x*tileWidth, y*tileHeight, tileHeight, tileHeight-16)
 		x++
-		if x >= n {
+		if x >= ntilesPerRow {
 			x = 0
 			y++
 		}
