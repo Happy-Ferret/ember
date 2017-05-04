@@ -136,15 +136,28 @@ gentilesetdef -dtype l2 > ../mods/spark/tilesetdefs/tileset_catacombs_theme_1.tx
 gentilesetdef -dtype l3 > ../mods/spark/tilesetdefs/tileset_caves_theme_1.txt
 gentilesetdef -dtype l4 > ../mods/spark/tilesetdefs/tileset_hell_theme_1.txt
 
+# Generate monster graphics.
+if [ ! -d "../mods/spark/images/enemies" ]; then
+	mkdir -p ../mods/spark/images/enemies
+	# Acid Beast.
+	# TODO: Implement.
+fi
+
+# Copy cursor graphics.
+if [ ! -d "../mods/spark/images/cursors" ]; then
+	mkdir -p ../mods/spark/images/cursors
+	cp _dump_/data/inv/objcurs/objcurs_0001.png ../mods/spark/images/cursors/cursor_hand.png
+fi
+
 # Convert music from wav to ogg.
 echo "Converting music from wav to ogg."
 if [ ! -d "../mods/spark/music" ]; then
 	mkdir -p ../mods/spark/music
-	ffmpeg -loglevel quiet -y -i diabdat/music/dintro.wav ../mods/spark/music/intro.ogg
-	ffmpeg -loglevel quiet -y -i diabdat/music/dlvla.wav ../mods/spark/music/cathedral.ogg
-	ffmpeg -loglevel quiet -y -i diabdat/music/dlvlb.wav ../mods/spark/music/catacombs.ogg
-	ffmpeg -loglevel quiet -y -i diabdat/music/dlvlc.wav ../mods/spark/music/caves.ogg
-	ffmpeg -loglevel quiet -y -i diabdat/music/dlvld.wav ../mods/spark/music/hell.ogg
-	ffmpeg -loglevel quiet -y -i diabdat/music/dtowne.wav ../mods/spark/music/tristram.ogg
+	ffmpeg -loglevel error -y -i diabdat/music/dintro.wav ../mods/spark/music/intro.ogg
+	ffmpeg -loglevel error -y -i diabdat/music/dlvla.wav ../mods/spark/music/cathedral.ogg
+	ffmpeg -loglevel error -y -i diabdat/music/dlvlb.wav ../mods/spark/music/catacombs.ogg
+	ffmpeg -loglevel error -y -i diabdat/music/dlvlc.wav ../mods/spark/music/caves.ogg
+	ffmpeg -loglevel error -y -i diabdat/music/dlvld.wav ../mods/spark/music/hell.ogg
+	ffmpeg -loglevel error -y -i diabdat/music/dtowne.wav ../mods/spark/music/tristram.ogg
 fi
 `
