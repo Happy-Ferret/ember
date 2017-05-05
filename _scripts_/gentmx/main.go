@@ -154,8 +154,9 @@ func gentmx(w io.Writer, binPath, dtype, mpqDir string) error {
 
 	// Number of dungeon pieces contained within <dtype>.MIN
 	ndpieces := len(sol)
-	// Tileset width in pixels.
+	// Tile width in pixels of each tile within the tileset.
 	const tileWidth = 64
+	// Tileset width in pixels.
 	tilesetWidth := tileWidth * ntilesPerRow
 	// Tileset height in pixels.
 	tilesetHeight := tileHeight * int(math.Ceil(float64(ndpieces)/float64(ntilesPerRow)))

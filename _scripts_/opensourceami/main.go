@@ -137,10 +137,108 @@ gentilesetdef -dtype l3 > ../mods/spark/tilesetdefs/tileset_caves_theme_1.txt
 gentilesetdef -dtype l4 > ../mods/spark/tilesetdefs/tileset_hell_theme_1.txt
 
 # Generate monster graphics.
+echo "Generate monster graphics."
 if [ ! -d "../mods/spark/images/enemies" ]; then
 	mkdir -p ../mods/spark/images/enemies
-	# Acid Beast.
-	# TODO: Implement.
+	# Spitting Terror
+	echo "Generating Spitting Terror graphics."
+	montage _dump_/monsters/acid/acid{a,d,h,n,s,w}/*_2/*.png _dump_/monsters/acid/acid{a,d,h,n,s,w}/*_3/*.png _dump_/monsters/acid/acid{a,d,h,n,s,w}/*_4/*.png _dump_/monsters/acid/acid{a,d,h,n,s,w}/*_5/*.png _dump_/monsters/acid/acid{a,d,h,n,s,w}/*_6/*.png _dump_/monsters/acid/acid{a,d,h,n,s,w}/*_7/*.png _dump_/monsters/acid/acid{a,d,h,n,s,w}/*_0/*.png _dump_/monsters/acid/acid{a,d,h,n,s,w}/*_1/*.png -geometry +0+0 -tile x8 -background none ../mods/spark/images/enemies/spitting_terror.png
+	# Winged Fiend
+	echo "Generating Winged Fiend graphics."
+	montage _dump_/monsters/bat/bat{a,d,h,n,w}/*_2/*.png _dump_/monsters/bat/bat{a,d,h,n,w}/*_3/*.png _dump_/monsters/bat/bat{a,d,h,n,w}/*_4/*.png _dump_/monsters/bat/bat{a,d,h,n,w}/*_5/*.png _dump_/monsters/bat/bat{a,d,h,n,w}/*_6/*.png _dump_/monsters/bat/bat{a,d,h,n,w}/*_7/*.png _dump_/monsters/bat/bat{a,d,h,n,w}/*_0/*.png _dump_/monsters/bat/bat{a,d,h,n,w}/*_1/*.png -geometry +0+0 -tile x8 -background none ../mods/spark/images/enemies/winged_fiend.png
+	# Devil Kin Brute
+	echo "Generating Devil Kin Brute graphics."
+	montage _dump_/monsters/bigfall/fallg{a,d,h,n,w}/*_2/*.png _dump_/monsters/bigfall/fallg{a,d,h,n,w}/*_3/*.png _dump_/monsters/bigfall/fallg{a,d,h,n,w}/*_4/*.png _dump_/monsters/bigfall/fallg{a,d,h,n,w}/*_5/*.png _dump_/monsters/bigfall/fallg{a,d,h,n,w}/*_6/*.png _dump_/monsters/bigfall/fallg{a,d,h,n,w}/*_7/*.png _dump_/monsters/bigfall/fallg{a,d,h,n,w}/*_0/*.png _dump_/monsters/bigfall/fallg{a,d,h,n,w}/*_1/*.png -geometry +0+0 -tile x8 -background none ../mods/spark/images/enemies/devil_kin_brute.png
+	# Black Knight
+	echo "Generating Black Knight graphics."
+	montage _dump_/monsters/black/black{a,d,h,n,w}/*_2/*.png _dump_/monsters/black/black{a,d,h,n,w}/*_3/*.png _dump_/monsters/black/black{a,d,h,n,w}/*_4/*.png _dump_/monsters/black/black{a,d,h,n,w}/*_5/*.png _dump_/monsters/black/black{a,d,h,n,w}/*_6/*.png _dump_/monsters/black/black{a,d,h,n,w}/*_7/*.png _dump_/monsters/black/black{a,d,h,n,w}/*_0/*.png _dump_/monsters/black/black{a,d,h,n,w}/*_1/*.png -gravity south -geometry 160x160+0+0 -tile x8 -background none ../mods/spark/images/enemies/black_knight.png
+	# Dark Mage
+	echo "Generating Dark Mage graphics."
+	montage _dump_/monsters/darkmage/dmage{a,d,h,n,s}/*_2/*.png _dump_/monsters/darkmage/dmage{a,d,h,n,s}/*_3/*.png _dump_/monsters/darkmage/dmage{a,d,h,n,s}/*_4/*.png _dump_/monsters/darkmage/dmage{a,d,h,n,s}/*_5/*.png _dump_/monsters/darkmage/dmage{a,d,h,n,s}/*_6/*.png _dump_/monsters/darkmage/dmage{a,d,h,n,s}/*_7/*.png _dump_/monsters/darkmage/dmage{a,d,h,n,s}/*_0/*.png _dump_/monsters/darkmage/dmage{a,d,h,n,s}/*_1/*.png -geometry +0+0 -tile x8 -background none ../mods/spark/images/enemies/dark_mage.png
+	# Bone Demon
+	echo "Generating Bone Demon graphics."
+	montage _dump_/monsters/demskel/demskl{a,d,h,n,s,w}/*_2/*.png _dump_/monsters/demskel/demskl{a,d,h,n,s,w}/*_3/*.png _dump_/monsters/demskel/demskl{a,d,h,n,s,w}/*_4/*.png _dump_/monsters/demskel/demskl{a,d,h,n,s,w}/*_5/*.png _dump_/monsters/demskel/demskl{a,d,h,n,s,w}/*_6/*.png _dump_/monsters/demskel/demskl{a,d,h,n,s,w}/*_7/*.png _dump_/monsters/demskel/demskl{a,d,h,n,s,w}/*_0/*.png _dump_/monsters/demskel/demskl{a,d,h,n,s,w}/*_1/*.png -geometry +0+0 -tile x8 -background none ../mods/spark/images/enemies/bone_demon.png
+	# Diablo
+	echo "Generating Diablo graphics."
+	montage _dump_/monsters/diablo/diablo{a,d,h,n,s,w}/*_2/*.png _dump_/monsters/diablo/diablo{a,d,h,n,s,w}/*_3/*.png _dump_/monsters/diablo/diablo{a,d,h,n,s,w}/*_4/*.png _dump_/monsters/diablo/diablo{a,d,h,n,s,w}/*_5/*.png _dump_/monsters/diablo/diablo{a,d,h,n,s,w}/*_6/*.png _dump_/monsters/diablo/diablo{a,d,h,n,s,w}/*_7/*.png _dump_/monsters/diablo/diablo{a,d,h,n,s,w}/*_0/*.png _dump_/monsters/diablo/diablo{a,d,h,n,s,w}/*_1/*.png -geometry +0+0 -tile x8 -background none ../mods/spark/images/enemies/diablo.png
+	# Fallen One Spear Wielder
+	echo "Generating Fallen One Spear Wielder graphics."
+	montage _dump_/monsters/falspear/phall{a,d,h,n,s,w}/*_2/*.png _dump_/monsters/falspear/phall{a,d,h,n,s,w}/*_3/*.png _dump_/monsters/falspear/phall{a,d,h,n,s,w}/*_4/*.png _dump_/monsters/falspear/phall{a,d,h,n,s,w}/*_5/*.png _dump_/monsters/falspear/phall{a,d,h,n,s,w}/*_6/*.png _dump_/monsters/falspear/phall{a,d,h,n,s,w}/*_7/*.png _dump_/monsters/falspear/phall{a,d,h,n,s,w}/*_0/*.png _dump_/monsters/falspear/phall{a,d,h,n,s,w}/*_1/*.png -geometry +0+0 -tile x8 -background none ../mods/spark/images/enemies/fallen_one_spear_wielder.png
+	# Fallen One Sword Wielder
+	echo "Generating Fallen One Sword Wielder graphics."
+	montage _dump_/monsters/falsword/fall{a,d,h,n,s,w}/*_2/*.png _dump_/monsters/falsword/fall{a,d,h,n,s,w}/*_3/*.png _dump_/monsters/falsword/fall{a,d,h,n,s,w}/*_4/*.png _dump_/monsters/falsword/fall{a,d,h,n,s,w}/*_5/*.png _dump_/monsters/falsword/fall{a,d,h,n,s,w}/*_6/*.png _dump_/monsters/falsword/fall{a,d,h,n,s,w}/*_7/*.png _dump_/monsters/falsword/fall{a,d,h,n,s,w}/*_0/*.png _dump_/monsters/falsword/fall{a,d,h,n,s,w}/*_1/*.png -geometry +0+0 -tile x8 -background none ../mods/spark/images/enemies/fallen_one_sword_wielder.png
+	# Overlord
+	echo "Generating Overlord graphics."
+	montage _dump_/monsters/fat/fat{a,d,h,n,s,w}/*_2/*.png _dump_/monsters/fat/fat{a,d,h,n,s,w}/*_3/*.png _dump_/monsters/fat/fat{a,d,h,n,s,w}/*_4/*.png _dump_/monsters/fat/fat{a,d,h,n,s,w}/*_5/*.png _dump_/monsters/fat/fat{a,d,h,n,s,w}/*_6/*.png _dump_/monsters/fat/fat{a,d,h,n,s,w}/*_7/*.png _dump_/monsters/fat/fat{a,d,h,n,s,w}/*_0/*.png _dump_/monsters/fat/fat{a,d,h,n,s,w}/*_1/*.png -geometry +0+0 -tile x8 -background none ../mods/spark/images/enemies/overlord.png
+	# Butcher
+	echo "Generating Butcher graphics."
+	montage _dump_/monsters/fatc/fatc{a,d,h,n,w}/*_2/*.png _dump_/monsters/fatc/fatc{a,d,h,n,w}/*_3/*.png _dump_/monsters/fatc/fatc{a,d,h,n,w}/*_4/*.png _dump_/monsters/fatc/fatc{a,d,h,n,w}/*_5/*.png _dump_/monsters/fatc/fatc{a,d,h,n,w}/*_6/*.png _dump_/monsters/fatc/fatc{a,d,h,n,w}/*_7/*.png _dump_/monsters/fatc/fatc{a,d,h,n,w}/*_0/*.png _dump_/monsters/fatc/fatc{a,d,h,n,w}/*_1/*.png -geometry +0+0 -tile x8 -background none ../mods/spark/images/enemies/butcher.png
+	# Fireman
+	echo "Generating Fireman graphics."
+	montage _dump_/monsters/fireman/firem{a,d,h,n,s,w}/*_2/*.png _dump_/monsters/fireman/firem{a,d,h,n,s,w}/*_3/*.png _dump_/monsters/fireman/firem{a,d,h,n,s,w}/*_4/*.png _dump_/monsters/fireman/firem{a,d,h,n,s,w}/*_5/*.png _dump_/monsters/fireman/firem{a,d,h,n,s,w}/*_6/*.png _dump_/monsters/fireman/firem{a,d,h,n,s,w}/*_7/*.png _dump_/monsters/fireman/firem{a,d,h,n,s,w}/*_0/*.png _dump_/monsters/fireman/firem{a,d,h,n,s,w}/*_1/*.png -gravity south -geometry 128x171+0+0 -tile x8 -background none ../mods/spark/images/enemies/fireman.png
+	# Gargoyle
+	echo "Generating Gargoyle graphics."
+	montage _dump_/monsters/gargoyle/gargo{a,d,h,n,s,w}/*_2/*.png _dump_/monsters/gargoyle/gargo{a,d,h,n,s,w}/*_3/*.png _dump_/monsters/gargoyle/gargo{a,d,h,n,s,w}/*_4/*.png _dump_/monsters/gargoyle/gargo{a,d,h,n,s,w}/*_5/*.png _dump_/monsters/gargoyle/gargo{a,d,h,n,s,w}/*_6/*.png _dump_/monsters/gargoyle/gargo{a,d,h,n,s,w}/*_7/*.png _dump_/monsters/gargoyle/gargo{a,d,h,n,s,w}/*_0/*.png _dump_/monsters/gargoyle/gargo{a,d,h,n,s,w}/*_1/*.png -geometry +0+0 -tile x8 -background none ../mods/spark/images/enemies/gargoyle.png
+	# Goat Archer
+	echo "Generating Goat Archer graphics."
+	montage _dump_/monsters/goatbow/goatb{a,d,h,n,w}/*_2/*.png _dump_/monsters/goatbow/goatb{a,d,h,n,w}/*_3/*.png _dump_/monsters/goatbow/goatb{a,d,h,n,w}/*_4/*.png _dump_/monsters/goatbow/goatb{a,d,h,n,w}/*_5/*.png _dump_/monsters/goatbow/goatb{a,d,h,n,w}/*_6/*.png _dump_/monsters/goatbow/goatb{a,d,h,n,w}/*_7/*.png _dump_/monsters/goatbow/goatb{a,d,h,n,w}/*_0/*.png _dump_/monsters/goatbow/goatb{a,d,h,n,w}/*_1/*.png -geometry +0+0 -tile x8 -background none ../mods/spark/images/enemies/goat_archer.png
+	# Goat Lord
+	echo "Generating Goat Lord graphics."
+	montage _dump_/monsters/goatlord/goatl{a,d,h,n,w}/*_2/*.png _dump_/monsters/goatlord/goatl{a,d,h,n,w}/*_3/*.png _dump_/monsters/goatlord/goatl{a,d,h,n,w}/*_4/*.png _dump_/monsters/goatlord/goatl{a,d,h,n,w}/*_5/*.png _dump_/monsters/goatlord/goatl{a,d,h,n,w}/*_6/*.png _dump_/monsters/goatlord/goatl{a,d,h,n,w}/*_7/*.png _dump_/monsters/goatlord/goatl{a,d,h,n,w}/*_0/*.png _dump_/monsters/goatlord/goatl{a,d,h,n,w}/*_1/*.png -gravity south -geometry 160x160+0+0 -tile x8 -background none ../mods/spark/images/enemies/goat_lord.png
+	# Goat Mace Wielder
+	echo "Generating Goat Mace Wielder graphics."
+	montage _dump_/monsters/goatmace/goat{a,d,h,n,s,w}/*_2/*.png _dump_/monsters/goatmace/goat{a,d,h,n,s,w}/*_3/*.png _dump_/monsters/goatmace/goat{a,d,h,n,s,w}/*_4/*.png _dump_/monsters/goatmace/goat{a,d,h,n,s,w}/*_5/*.png _dump_/monsters/goatmace/goat{a,d,h,n,s,w}/*_6/*.png _dump_/monsters/goatmace/goat{a,d,h,n,s,w}/*_7/*.png _dump_/monsters/goatmace/goat{a,d,h,n,s,w}/*_0/*.png _dump_/monsters/goatmace/goat{a,d,h,n,s,w}/*_1/*.png -geometry +0+0 -tile x8 -background none ../mods/spark/images/enemies/goat_mace_wielder.png
+	# Golem
+	echo "Generating Golem graphics."
+	montage _dump_/monsters/golem/golema/*_2/*.png _dump_/monsters/golem/golemd/*.png _dump_/monsters/golem/golems/*.png _dump_/monsters/golem/golemw/*_2/*.png _dump_/monsters/golem/golema/*_3/*.png _dump_/monsters/golem/golemd/*.png _dump_/monsters/golem/golems/*.png _dump_/monsters/golem/golemw/*_3/*.png _dump_/monsters/golem/golema/*_4/*.png _dump_/monsters/golem/golemd/*.png _dump_/monsters/golem/golems/*.png _dump_/monsters/golem/golemw/*_4/*.png _dump_/monsters/golem/golema/*_5/*.png _dump_/monsters/golem/golemd/*.png _dump_/monsters/golem/golems/*.png _dump_/monsters/golem/golemw/*_5/*.png _dump_/monsters/golem/golema/*_6/*.png _dump_/monsters/golem/golemd/*.png _dump_/monsters/golem/golems/*.png _dump_/monsters/golem/golemw/*_6/*.png _dump_/monsters/golem/golema/*_7/*.png _dump_/monsters/golem/golemd/*.png _dump_/monsters/golem/golems/*.png _dump_/monsters/golem/golemw/*_7/*.png _dump_/monsters/golem/golema/*_0/*.png _dump_/monsters/golem/golemd/*.png _dump_/monsters/golem/golems/*.png _dump_/monsters/golem/golemw/*_0/*.png _dump_/monsters/golem/golema/*_1/*.png _dump_/monsters/golem/golemd/*.png _dump_/monsters/golem/golems/*.png _dump_/monsters/golem/golemw/*_1/*.png -geometry +0+0 -tile x8 -background none ../mods/spark/images/enemies/golem.png
+	# Mage
+	echo "Generating Mage graphics."
+	montage _dump_/monsters/mage/mage{a,d,h,n,s}/*_2/*.png _dump_/monsters/mage/mage{a,d,h,n,s}/*_3/*.png _dump_/monsters/mage/mage{a,d,h,n,s}/*_4/*.png _dump_/monsters/mage/mage{a,d,h,n,s}/*_5/*.png _dump_/monsters/mage/mage{a,d,h,n,s}/*_6/*.png _dump_/monsters/mage/mage{a,d,h,n,s}/*_7/*.png _dump_/monsters/mage/mage{a,d,h,n,s}/*_0/*.png _dump_/monsters/mage/mage{a,d,h,n,s}/*_1/*.png -geometry +0+0 -tile x8 -background none ../mods/spark/images/enemies/mage.png
+	# Magma Demon
+	echo "Generating Magma Demon graphics."
+	montage _dump_/monsters/magma/magma{a,d,h,n,s,w}/*_2/*.png _dump_/monsters/magma/magma{a,d,h,n,s,w}/*_3/*.png _dump_/monsters/magma/magma{a,d,h,n,s,w}/*_4/*.png _dump_/monsters/magma/magma{a,d,h,n,s,w}/*_5/*.png _dump_/monsters/magma/magma{a,d,h,n,s,w}/*_6/*.png _dump_/monsters/magma/magma{a,d,h,n,s,w}/*_7/*.png _dump_/monsters/magma/magma{a,d,h,n,s,w}/*_0/*.png _dump_/monsters/magma/magma{a,d,h,n,s,w}/*_1/*.png -geometry +0+0 -tile x8 -background none ../mods/spark/images/enemies/magma_demon.png
+	# Balrog
+	echo "Generating Balrog graphics."
+	montage _dump_/monsters/mega/mega{a,d,h,n,s,w}/*_2/*.png _dump_/monsters/mega/mega{a,d,h,n,s,w}/*_3/*.png _dump_/monsters/mega/mega{a,d,h,n,s,w}/*_4/*.png _dump_/monsters/mega/mega{a,d,h,n,s,w}/*_5/*.png _dump_/monsters/mega/mega{a,d,h,n,s,w}/*_6/*.png _dump_/monsters/mega/mega{a,d,h,n,s,w}/*_7/*.png _dump_/monsters/mega/mega{a,d,h,n,s,w}/*_0/*.png _dump_/monsters/mega/mega{a,d,h,n,s,w}/*_1/*.png -geometry +0+0 -tile x8 -background none ../mods/spark/images/enemies/balrog.png
+	# Horned Demon
+	echo "Generating Horned Demon graphics."
+	montage _dump_/monsters/rhino/rhino{a,d,h,n,s,w}/*_2/*.png _dump_/monsters/rhino/rhino{a,d,h,n,s,w}/*_3/*.png _dump_/monsters/rhino/rhino{a,d,h,n,s,w}/*_4/*.png _dump_/monsters/rhino/rhino{a,d,h,n,s,w}/*_5/*.png _dump_/monsters/rhino/rhino{a,d,h,n,s,w}/*_6/*.png _dump_/monsters/rhino/rhino{a,d,h,n,s,w}/*_7/*.png _dump_/monsters/rhino/rhino{a,d,h,n,s,w}/*_0/*.png _dump_/monsters/rhino/rhino{a,d,h,n,s,w}/*_1/*.png -geometry +0+0 -tile x8 -background none ../mods/spark/images/enemies/horned_demon.png
+	# Scavenger
+	echo "Generating Scavenger graphics."
+	montage _dump_/monsters/scav/scav{a,d,h,n,s,w}/*_2/*.png _dump_/monsters/scav/scav{a,d,h,n,s,w}/*_3/*.png _dump_/monsters/scav/scav{a,d,h,n,s,w}/*_4/*.png _dump_/monsters/scav/scav{a,d,h,n,s,w}/*_5/*.png _dump_/monsters/scav/scav{a,d,h,n,s,w}/*_6/*.png _dump_/monsters/scav/scav{a,d,h,n,s,w}/*_7/*.png _dump_/monsters/scav/scav{a,d,h,n,s,w}/*_0/*.png _dump_/monsters/scav/scav{a,d,h,n,s,w}/*_1/*.png -geometry +0+0 -tile x8 -background none ../mods/spark/images/enemies/scavenger.png
+	# Skeleton Axe Wielder
+	echo "Generating Skeleton Axe Wielder graphics."
+	montage _dump_/monsters/skelaxe/sklax{a,d,h,n,s,w}/*_2/*.png _dump_/monsters/skelaxe/sklax{a,d,h,n,s,w}/*_3/*.png _dump_/monsters/skelaxe/sklax{a,d,h,n,s,w}/*_4/*.png _dump_/monsters/skelaxe/sklax{a,d,h,n,s,w}/*_5/*.png _dump_/monsters/skelaxe/sklax{a,d,h,n,s,w}/*_6/*.png _dump_/monsters/skelaxe/sklax{a,d,h,n,s,w}/*_7/*.png _dump_/monsters/skelaxe/sklax{a,d,h,n,s,w}/*_0/*.png _dump_/monsters/skelaxe/sklax{a,d,h,n,s,w}/*_1/*.png -geometry +0+0 -tile x8 -background none ../mods/spark/images/enemies/skeleton_axe_wielder.png
+	# Skeleton Archer
+	echo "Generating Skeleton Archer graphics."
+	montage _dump_/monsters/skelbow/sklbw{a,d,h,n,s,w}/*_2/*.png _dump_/monsters/skelbow/sklbw{a,d,h,n,s,w}/*_3/*.png _dump_/monsters/skelbow/sklbw{a,d,h,n,s,w}/*_4/*.png _dump_/monsters/skelbow/sklbw{a,d,h,n,s,w}/*_5/*.png _dump_/monsters/skelbow/sklbw{a,d,h,n,s,w}/*_6/*.png _dump_/monsters/skelbow/sklbw{a,d,h,n,s,w}/*_7/*.png _dump_/monsters/skelbow/sklbw{a,d,h,n,s,w}/*_0/*.png _dump_/monsters/skelbow/sklbw{a,d,h,n,s,w}/*_1/*.png -geometry +0+0 -tile x8 -background none ../mods/spark/images/enemies/skeleton_archer.png
+	# Skeleton Sword Wielder
+	echo "Generating Skeleton Sword Wielder graphics."
+	montage _dump_/monsters/skelsd/sklsr{a,d,h,n,s,w}/*_2/*.png _dump_/monsters/skelsd/sklsr{a,d,h,n,s,w}/*_3/*.png _dump_/monsters/skelsd/sklsr{a,d,h,n,s,w}/*_4/*.png _dump_/monsters/skelsd/sklsr{a,d,h,n,s,w}/*_5/*.png _dump_/monsters/skelsd/sklsr{a,d,h,n,s,w}/*_6/*.png _dump_/monsters/skelsd/sklsr{a,d,h,n,s,w}/*_7/*.png _dump_/monsters/skelsd/sklsr{a,d,h,n,s,w}/*_0/*.png _dump_/monsters/skelsd/sklsr{a,d,h,n,s,w}/*_1/*.png -geometry +0+0 -tile x8 -background none ../mods/spark/images/enemies/skeleton_sword_wielder.png
+	# Skeleton King
+	echo "Generating Skeleton King graphics."
+	montage _dump_/monsters/sking/sking{a,d,h,n,s,w}/*_2/*.png _dump_/monsters/sking/sking{a,d,h,n,s,w}/*_3/*.png _dump_/monsters/sking/sking{a,d,h,n,s,w}/*_4/*.png _dump_/monsters/sking/sking{a,d,h,n,s,w}/*_5/*.png _dump_/monsters/sking/sking{a,d,h,n,s,w}/*_6/*.png _dump_/monsters/sking/sking{a,d,h,n,s,w}/*_7/*.png _dump_/monsters/sking/sking{a,d,h,n,s,w}/*_0/*.png _dump_/monsters/sking/sking{a,d,h,n,s,w}/*_1/*.png -geometry +0+0 -tile x8 -background none ../mods/spark/images/enemies/skeleton_king.png
+	# Viper
+	echo "Generating Viper graphics."
+	montage _dump_/monsters/snake/snake{a,d,h,n,s,w}/*_2/*.png _dump_/monsters/snake/snake{a,d,h,n,s,w}/*_3/*.png _dump_/monsters/snake/snake{a,d,h,n,s,w}/*_4/*.png _dump_/monsters/snake/snake{a,d,h,n,s,w}/*_5/*.png _dump_/monsters/snake/snake{a,d,h,n,s,w}/*_6/*.png _dump_/monsters/snake/snake{a,d,h,n,s,w}/*_7/*.png _dump_/monsters/snake/snake{a,d,h,n,s,w}/*_0/*.png _dump_/monsters/snake/snake{a,d,h,n,s,w}/*_1/*.png -geometry +0+0 -tile x8 -background none ../mods/spark/images/enemies/viper.png
+	# Hidden
+	echo "Generating Hidden graphics."
+	montage _dump_/monsters/sneak/sneak{a,d,h,n,s,w}/*_2/*.png _dump_/monsters/sneak/sneak{a,d,h,n,s,w}/*_3/*.png _dump_/monsters/sneak/sneak{a,d,h,n,s,w}/*_4/*.png _dump_/monsters/sneak/sneak{a,d,h,n,s,w}/*_5/*.png _dump_/monsters/sneak/sneak{a,d,h,n,s,w}/*_6/*.png _dump_/monsters/sneak/sneak{a,d,h,n,s,w}/*_7/*.png _dump_/monsters/sneak/sneak{a,d,h,n,s,w}/*_0/*.png _dump_/monsters/sneak/sneak{a,d,h,n,s,w}/*_1/*.png -geometry +0+0 -tile x8 -background none ../mods/spark/images/enemies/hidden.png
+	# Succubus
+	echo "Generating Succubus graphics."
+	montage _dump_/monsters/succ/scbs{a,d,h,n,w}/*_2/*.png _dump_/monsters/succ/scbs{a,d,h,n,w}/*_3/*.png _dump_/monsters/succ/scbs{a,d,h,n,w}/*_4/*.png _dump_/monsters/succ/scbs{a,d,h,n,w}/*_5/*.png _dump_/monsters/succ/scbs{a,d,h,n,w}/*_6/*.png _dump_/monsters/succ/scbs{a,d,h,n,w}/*_7/*.png _dump_/monsters/succ/scbs{a,d,h,n,w}/*_0/*.png _dump_/monsters/succ/scbs{a,d,h,n,w}/*_1/*.png -geometry +0+0 -tile x8 -background none ../mods/spark/images/enemies/succubus.png
+	# Litch Demon
+	echo "Generating Litch Demon graphics."
+	montage _dump_/monsters/thin/thin{a,d,h,n,s,w}/*_2/*.png _dump_/monsters/thin/thin{a,d,h,n,s,w}/*_3/*.png _dump_/monsters/thin/thin{a,d,h,n,s,w}/*_4/*.png _dump_/monsters/thin/thin{a,d,h,n,s,w}/*_5/*.png _dump_/monsters/thin/thin{a,d,h,n,s,w}/*_6/*.png _dump_/monsters/thin/thin{a,d,h,n,s,w}/*_7/*.png _dump_/monsters/thin/thin{a,d,h,n,s,w}/*_0/*.png _dump_/monsters/thin/thin{a,d,h,n,s,w}/*_1/*.png -geometry +0+0 -tile x8 -background none ../mods/spark/images/enemies/litch_demon.png
+	# Invisible Lord
+	echo "Generating Invisible Lord graphics."
+	montage _dump_/monsters/tsneak/tsneak{a,d,h,n,w}/*_2/*.png _dump_/monsters/tsneak/tsneak{a,d,h,n,w}/*_3/*.png _dump_/monsters/tsneak/tsneak{a,d,h,n,w}/*_4/*.png _dump_/monsters/tsneak/tsneak{a,d,h,n,w}/*_5/*.png _dump_/monsters/tsneak/tsneak{a,d,h,n,w}/*_6/*.png _dump_/monsters/tsneak/tsneak{a,d,h,n,w}/*_7/*.png _dump_/monsters/tsneak/tsneak{a,d,h,n,w}/*_0/*.png _dump_/monsters/tsneak/tsneak{a,d,h,n,w}/*_1/*.png -geometry +0+0 -tile x8 -background none ../mods/spark/images/enemies/invisible_lord.png
+	# Unraveler
+	echo "Generating Unraveler graphics."
+	montage _dump_/monsters/unrav/unrav{a,d,h,n,s,w}/*_2/*.png _dump_/monsters/unrav/unrav{a,d,h,n,s,w}/*_3/*.png _dump_/monsters/unrav/unrav{a,d,h,n,s,w}/*_4/*.png _dump_/monsters/unrav/unrav{a,d,h,n,s,w}/*_5/*.png _dump_/monsters/unrav/unrav{a,d,h,n,s,w}/*_6/*.png _dump_/monsters/unrav/unrav{a,d,h,n,s,w}/*_7/*.png _dump_/monsters/unrav/unrav{a,d,h,n,s,w}/*_0/*.png _dump_/monsters/unrav/unrav{a,d,h,n,s,w}/*_1/*.png -gravity south -geometry 96x128+0+0 -tile x8 -background none ../mods/spark/images/enemies/unraveler.png
+	# Zombie
+	echo "Generating Zombie graphics."
+	montage _dump_/monsters/zombie/zombie{a,d,h,n,s,w}/*_2/*.png _dump_/monsters/zombie/zombie{a,d,h,n,s,w}/*_3/*.png _dump_/monsters/zombie/zombie{a,d,h,n,s,w}/*_4/*.png _dump_/monsters/zombie/zombie{a,d,h,n,s,w}/*_5/*.png _dump_/monsters/zombie/zombie{a,d,h,n,s,w}/*_6/*.png _dump_/monsters/zombie/zombie{a,d,h,n,s,w}/*_7/*.png _dump_/monsters/zombie/zombie{a,d,h,n,s,w}/*_0/*.png _dump_/monsters/zombie/zombie{a,d,h,n,s,w}/*_1/*.png -geometry +0+0 -tile x8 -background none ../mods/spark/images/enemies/zombie.png
 fi
 
 # Copy cursor graphics.
