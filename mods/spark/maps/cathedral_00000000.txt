@@ -5,12 +5,12 @@ tilewidth=64
 tileheight=32
 orientation=isometric
 music=music/cathedral.ogg
-tileset=tilesetdefs/tileset_cathedral_theme_1.txt
+tileset=tileset/tileset_cathedral_theme_1.txt
 title=Cathedral
 
 [tilesets]
 tileset=../../../tiled/tiled_collision.png,64,32,0,0
-tileset=../images/tilesets/tileset_cathedral_theme_1.png,64,160,0,0
+tileset=../images/tileset/tileset_cathedral_theme_1.png,64,160,0,0
 
 [layer]
 type=background
@@ -243,4 +243,20 @@ data=
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+
+[enemy]
+# Fallen One (sword)
+type=enemy
+location=45,73,21,21
+category=falsword
+level=1,1
+number=10,20
+
+[enemy]
+# Acid Beasts
+type=enemy
+location=44,44,21,21
+category=acid
+level=1,1
+number=10,20
 

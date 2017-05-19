@@ -2,14 +2,14 @@
 <map version="1.0" orientation="isometric" width="96" height="96" tilewidth="64" tileheight="32">
  <properties>
   <property name="music" value="music/tristram.ogg"/>
-  <property name="tileset" value="tilesetdefs/tileset_tristram.txt"/>
+  <property name="tileset" value="tileset/tileset_tristram.txt"/>
   <property name="title" value="Tristram"/>
  </properties>
  <tileset firstgid="1" name="collision" tilewidth="64" tileheight="32">
   <image source="../tiled_collision.png" width="512" height="160"/>
  </tileset>
  <tileset firstgid="41" name="tristram" tilewidth="64" tileheight="256">
-  <image source="../../mods/spark/images/tilesets/tileset_tristram.png" width="4096" height="5120"/>
+  <image source="../../mods/spark/images/tileset/tileset_tristram.png" width="4096" height="5120"/>
  </tileset>
  <layer name="background" width="96" height="96">
   <data encoding="csv">

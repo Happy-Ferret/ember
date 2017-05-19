@@ -1,4 +1,4 @@
-img=images/tilesets/tileset_tristram.png
+img=images/tileset/tileset_tristram.png
 
 tile=41,0,0,64,256,32,240
 tile=42,64,0,64,256,32,240

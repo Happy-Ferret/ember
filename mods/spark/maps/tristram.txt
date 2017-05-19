@@ -5,12 +5,12 @@ tilewidth=64
 tileheight=32
 orientation=isometric
 music=music/tristram.ogg
-tileset=tilesetdefs/tileset_tristram.txt
+tileset=tileset/tileset_tristram.txt
 title=Tristram
 
 [tilesets]
 tileset=../../../tiled/tiled_collision.png,64,32,0,0
-tileset=../images/tilesets/tileset_tristram.png,64,256,0,0
+tileset=../images/tileset/tileset_tristram.png,64,256,0,0
 
 [layer]
 type=background

@@ -1,4 +1,4 @@
-img=images/tilesets/tileset_cathedral_theme_1.png
+img=images/tileset/tileset_cathedral_theme_1.png
 
 tile=41,0,0,64,160,32,144
 tile=42,64,0,64,160,32,144

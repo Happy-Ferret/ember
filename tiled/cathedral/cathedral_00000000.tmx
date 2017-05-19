@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="isometric" width="112" height="112" tilewidth="64" tileheight="32">
+<map version="1.0" orientation="isometric" renderorder="right-down" width="112" height="112" tilewidth="64" tileheight="32" nextobjectid="3">
  <properties>
   <property name="music" value="music/cathedral.ogg"/>
-  <property name="tileset" value="tilesetdefs/tileset_cathedral_theme_1.txt"/>
+  <property name="tileset" value="tileset/tileset_cathedral_theme_1.txt"/>
   <property name="title" value="Cathedral"/>
  </properties>
- <tileset firstgid="1" name="collision" tilewidth="64" tileheight="32">
+ <tileset firstgid="1" name="collision" tilewidth="64" tileheight="32" tilecount="40" columns="8">
   <image source="../tiled_collision.png" width="512" height="160"/>
  </tileset>
- <tileset firstgid="41" name="cathedral" tilewidth="64" tileheight="160">
-  <image source="../../mods/spark/images/tilesets/tileset_cathedral_theme_1.png" width="2048" height="2400"/>
+ <tileset firstgid="41" name="cathedral" tilewidth="64" tileheight="160" tilecount="480" columns="32">
+  <image source="../../mods/spark/images/tileset/tileset_cathedral_theme_1.png" width="2048" height="2400"/>
  </tileset>
  <layer name="background" width="112" height="112">
   <data encoding="csv">
@@ -125,9 +125,9 @@
 76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,
 80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,80,71,
 76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73,76,73
-  </data>
+</data>
  </layer>
- <layer name="collision" width="112" height="112" visible="0">
+ <layer name="collision" width="112" height="112">
   <data encoding="csv">
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
@@ -241,6 +241,22 @@
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-  </data>
+</data>
  </layer>
+ <objectgroup name="enemy">
+  <object id="1" name="Fallen One (sword)" type="enemy" x="1443.33" y="2337.33" width="674.667" height="674">
+   <properties>
+    <property name="category" value="falsword"/>
+    <property name="level" value="1,1"/>
+    <property name="number" value="10,20"/>
+   </properties>
+  </object>
+  <object id="2" name="Acid Beasts" type="enemy" x="1438.17" y="1439.5" width="674.667" height="674">
+   <properties>
+    <property name="category" value="acid"/>
+    <property name="level" value="1,1"/>
+    <property name="number" value="10,20"/>
+   </properties>
+  </object>
+ </objectgroup>
 </map>
