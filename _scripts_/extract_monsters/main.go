@@ -5,15 +5,25 @@
 package main
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
+	"path"
+	"path/filepath"
+	"strings"
 
-	"github.com/kr/pretty"
+	"github.com/mewkiz/pkg/pathutil"
+	"github.com/mewkiz/pkg/term"
 	"github.com/pkg/errors"
 	"github.com/sanctuary/exp/d1"
 )
+
+// dbg represents a logger with the "extract_monsters:" prefix, which logs debug
+// messages to standard error.
+var dbg = log.New(os.Stderr, term.MagentaBold("extract_monsters:")+" ", 0)
 
 func usage() {
 	const use = `
@@ -21,7 +31,7 @@ Extract monsters assets from the Diablo 1 game.
 
 Usage:
 
-	extract_monster [OPTION]... diablo.exe
+	extract_monsters [OPTION]... diablo.exe
 
 Flags:
 `
@@ -31,13 +41,22 @@ Flags:
 
 func main() {
 	// Parse command line arguments.
+	var (
+		// quiet specifies whether to suppress non-error messages.
+		quiet bool
+	)
 	flag.Usage = usage
+	flag.BoolVar(&quiet, "q", false, "suppress non-error messages")
 	flag.Parse()
 	if flag.NArg() != 1 {
 		flag.Usage()
 		os.Exit(1)
 	}
 	exePath := flag.Arg(0)
+	// Mute debug messages if `-q` is set.
+	if quiet {
+		dbg.SetOutput(ioutil.Discard)
+	}
 
 	// Extract monster assets from diablo.exe.
 	if err := extract(exePath); err != nil {
@@ -51,6 +70,149 @@ func extract(exePath string) error {
 	if err != nil {
 		return errors.WithStack(err)
 	}
-	pretty.Println("monsters:", exe.Monsters)
+	for _, monster := range exe.Monsters {
+		if err := extractMonster(monster); err != nil {
+			return errors.WithStack(err)
+		}
+	}
+	return nil
+}
+
+// extractMonster extracts the assets of the given monster.
+func extractMonster(monster d1.MonsterData) error {
+	dbg.Printf("extracting assets of %q.", monster.Name)
+	//pretty.Println(monster)
+	// Extract monster graphics.
+	fmt.Println("#!/bin/bash")
+	if err := extractMonsterGraphics(monster); err != nil {
+		return errors.WithStack(err)
+	}
+	// Extract monster sounds.
+	if err := extractMonsterSounds(monster); err != nil {
+		return errors.WithStack(err)
+	}
+	return nil
+}
+
+// extractMonsterGraphics extracts the graphics of the given monster.
+func extractMonsterGraphics(monster d1.MonsterData) error {
+	switch monster.Name {
+	case "Wyrm", "Cave Slug", "Devil Wyrm", "Devourer":
+		// TODO: Try to locate the Wyrm monster graphics in another MPQ archive
+		// than diabdat.mpq.
+
+		// Skip monster; Wyrm monster graphics missing from diabdat.mpq.
+		return nil
+	}
+
+	actions := []d1.MonsterAction{
+		d1.MonsterActionStand,
+		d1.MonsterActionWalk,
+		d1.MonsterActionAttack,
+		d1.MonsterActionHit,
+		d1.MonsterActionDie,
+	}
+	if monster.HasSpecialGraphic {
+		actions = append(actions, d1.MonsterActionSpecial)
+	}
+
+	// # Spitting Terror
+
+	// montage _dump_/monsters/acid/acid{a,d,h,n,s,w}/*_2/*.png
+	// _dump_/monsters/acid/acid{a,d,h,n,s,w}/*_3/*.png
+	// _dump_/monsters/acid/acid{a,d,h,n,s,w}/*_4/*.png
+	// _dump_/monsters/acid/acid{a,d,h,n,s,w}/*_5/*.png
+	// _dump_/monsters/acid/acid{a,d,h,n,s,w}/*_6/*.png
+	// _dump_/monsters/acid/acid{a,d,h,n,s,w}/*_7/*.png
+	// _dump_/monsters/acid/acid{a,d,h,n,s,w}/*_0/*.png
+	// _dump_/monsters/acid/acid{a,d,h,n,s,w}/*_1/*.png
+	// -geometry +0+0 -tile x8
+	// -background none ../mods/spark/images/enemies/spitting_terror.png
+
+	script := &bytes.Buffer{}
+	script.WriteString("montage \\\n")
+	for i := 0; i < 8; i++ {
+		direction := (2 + i) % 8
+		for _, action := range actions {
+			format := strings.ToLower(monster.CL2Path)
+			format = strings.Replace(format, `\`, "/", -1)
+			relCL2Path := fmt.Sprintf(format, action.Rune())
+			relCL2Dir := pathutil.TrimExt(relCL2Path)
+			trnDir := ""
+			if monster.HasTrn {
+				relTrnPath := strings.ToLower(monster.TrnPath)
+				relTrnPath = strings.Replace(relTrnPath, `\`, "/", -1)
+				dbg.Printf("using colour transition: %q.", relTrnPath)
+				trnDir = fmt.Sprintf("%s/", path.Base(relTrnPath))
+			}
+			switch relCL2Dir {
+			case "monsters/darkmage/dmagew":
+				// Skip action; darkmage has no walk animation.
+				continue
+			case "monsters/bigfall/fallgs":
+				// TODO: Try to locate the bigfall special action graphics in
+				// another MPQ archive than diabdat.mpq.
+
+				// Skip action; bigfall special action graphics missing from
+				// diabdat.mpq.
+				continue
+			case "monsters/golem/golemn", "monsters/golem/golemh":
+				// Skip actions; golem has no stand, hit or foo animation.
+				continue
+			}
+			if relCL2Dir == "monsters/golem/golemd" || relCL2Dir == "monsters/golem/golems" {
+				// Golem has only one direction for die and special actions.
+				relPngPath := fmt.Sprintf("%s/%s*.png", relCL2Dir, trnDir)
+				pngPath := filepath.Join("_dump_", relPngPath)
+				fmt.Fprintf(script, "\t%s \\\n", pngPath)
+				break
+			}
+			name := path.Base(relCL2Dir)
+			relPngPath := fmt.Sprintf("%s/%s%s_%d/*.png", relCL2Dir, trnDir, name, direction)
+			pngPath := filepath.Join("_dump_", relPngPath)
+			fmt.Fprintf(script, "\t%s \\\n", pngPath)
+		}
+	}
+	fmt.Fprintf(script, "\t-gravity south -geometry %dx+0+0 \\\n", monster.FrameWidth)
+	script.WriteString("\t-tile x8 \\\n")
+	script.WriteString("\t-background none \\\n")
+	dstName := snakeCase(monster.Name)
+	dstPath := fmt.Sprintf("../mods/spark/images/monster/%s.png", dstName)
+	fmt.Fprintf(script, "\t%s", dstPath)
+
+	fmt.Println(script)
+	return nil
+}
+
+// snakeCase returns a snake case version of the given monster name.
+func snakeCase(name string) string {
+	// TODO: Let monster categories (four different kinds of zombies) use the
+	// same graphic.
+	s := strings.ToLower(name)
+	return strings.Replace(s, " ", "_", -1)
+}
+
+// extractMonsterSounds extracts the sounds of the given monster.
+func extractMonsterSounds(monster d1.MonsterData) error {
+	actions := []d1.MonsterAction{
+		d1.MonsterActionStand,
+		d1.MonsterActionWalk,
+		d1.MonsterActionAttack,
+		d1.MonsterActionHit,
+		d1.MonsterActionDie,
+	}
+	if monster.HasSpecialSound {
+		actions = append(actions, d1.MonsterActionSpecial)
+	}
+	for _, action := range actions {
+		for i := 1; i <= 2; i++ {
+			format := strings.ToLower(monster.WavPath)
+			format = strings.Replace(format, `\`, "/", -1)
+			format = strings.Replace(format, "%i", "%d", -1)
+			relWavPath := fmt.Sprintf(format, action.Rune(), i)
+			_ = relWavPath
+			//fmt.Println("wav:", relWavPath)
+		}
+	}
 	return nil
 }
