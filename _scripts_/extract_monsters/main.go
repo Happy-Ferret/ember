@@ -70,20 +70,20 @@ func extract(exePath string) error {
 	if err != nil {
 		return errors.WithStack(err)
 	}
+	fmt.Println("#!/bin/bash")
 	for _, monster := range exe.Monsters {
 		if err := extractMonster(monster); err != nil {
 			return errors.WithStack(err)
 		}
 	}
+	//pretty.Println(exe.Monsters)
 	return nil
 }
 
 // extractMonster extracts the assets of the given monster.
 func extractMonster(monster d1.MonsterData) error {
 	dbg.Printf("extracting assets of %q.", monster.Name)
-	//pretty.Println(monster)
 	// Extract monster graphics.
-	fmt.Println("#!/bin/bash")
 	if err := extractMonsterGraphics(monster); err != nil {
 		return errors.WithStack(err)
 	}
@@ -115,21 +115,22 @@ func extractMonsterGraphics(monster d1.MonsterData) error {
 	if monster.HasSpecialGraphic {
 		actions = append(actions, d1.MonsterActionSpecial)
 	}
-
 	// # Spitting Terror
-
-	// montage _dump_/monsters/acid/acid{a,d,h,n,s,w}/*_2/*.png
-	// _dump_/monsters/acid/acid{a,d,h,n,s,w}/*_3/*.png
-	// _dump_/monsters/acid/acid{a,d,h,n,s,w}/*_4/*.png
-	// _dump_/monsters/acid/acid{a,d,h,n,s,w}/*_5/*.png
-	// _dump_/monsters/acid/acid{a,d,h,n,s,w}/*_6/*.png
-	// _dump_/monsters/acid/acid{a,d,h,n,s,w}/*_7/*.png
-	// _dump_/monsters/acid/acid{a,d,h,n,s,w}/*_0/*.png
-	// _dump_/monsters/acid/acid{a,d,h,n,s,w}/*_1/*.png
-	// -geometry +0+0 -tile x8
-	// -background none ../mods/spark/images/enemies/spitting_terror.png
-
+	//
+	//    montage \
+	//       _dump_/monsters/acid/acid{a,d,h,n,s,w}/*_2/*.png \
+	//       _dump_/monsters/acid/acid{a,d,h,n,s,w}/*_3/*.png \
+	//       _dump_/monsters/acid/acid{a,d,h,n,s,w}/*_4/*.png \
+	//       _dump_/monsters/acid/acid{a,d,h,n,s,w}/*_5/*.png \
+	//       _dump_/monsters/acid/acid{a,d,h,n,s,w}/*_6/*.png \
+	//       _dump_/monsters/acid/acid{a,d,h,n,s,w}/*_7/*.png \
+	//       _dump_/monsters/acid/acid{a,d,h,n,s,w}/*_0/*.png \
+	//       _dump_/monsters/acid/acid{a,d,h,n,s,w}/*_1/*.png \
+	//       -geometry +0+0 -tile x8 \
+	//       -background none \
+	//       ../mods/spark/images/enemies/spitting_terror.png
 	script := &bytes.Buffer{}
+	fmt.Fprintf(script, "echo 'Extracting graphics for %s'\n", monster.Name)
 	script.WriteString("montage \\\n")
 	for i := 0; i < 8; i++ {
 		direction := (2 + i) % 8
@@ -176,12 +177,35 @@ func extractMonsterGraphics(monster d1.MonsterData) error {
 	fmt.Fprintf(script, "\t-gravity south -geometry %dx+0+0 \\\n", monster.FrameWidth)
 	script.WriteString("\t-tile x8 \\\n")
 	script.WriteString("\t-background none \\\n")
-	dstName := snakeCase(monster.Name)
+	dstName := monsterName(monster)
 	dstPath := fmt.Sprintf("../mods/spark/images/monster/%s.png", dstName)
 	fmt.Fprintf(script, "\t%s", dstPath)
 
 	fmt.Println(script)
 	return nil
+}
+
+// monsterName returns the unique file name of the given monster.
+func monsterName(monster d1.MonsterData) string {
+	name := snakeCase(monster.Name)
+	cl2Path := strings.ToLower(monster.CL2Path)
+	cl2Path = strings.Replace(cl2Path, `\`, "/", -1)
+	// Resolve monster name collisions.
+	switch {
+	case strings.HasPrefix(cl2Path, "monsters/skelaxe/"):
+		return name + "_axe"
+	case strings.HasPrefix(cl2Path, "monsters/skelbow/"):
+		return name + "_bow"
+	case strings.HasPrefix(cl2Path, "monsters/falspear/"):
+		return name + "_spear"
+	case strings.HasPrefix(cl2Path, "monsters/falsword/"):
+		return name + "_sword"
+	case strings.HasPrefix(cl2Path, "monsters/goatmace/"):
+		return name + "_mace"
+	case strings.HasPrefix(cl2Path, "monsters/goatbow/"):
+		return name + "_bow"
+	}
+	return name
 }
 
 // snakeCase returns a snake case version of the given monster name.
@@ -195,8 +219,8 @@ func snakeCase(name string) string {
 // extractMonsterSounds extracts the sounds of the given monster.
 func extractMonsterSounds(monster d1.MonsterData) error {
 	actions := []d1.MonsterAction{
-		d1.MonsterActionStand,
-		d1.MonsterActionWalk,
+		//d1.MonsterActionStand,
+		//d1.MonsterActionWalk,
 		d1.MonsterActionAttack,
 		d1.MonsterActionHit,
 		d1.MonsterActionDie,
@@ -204,15 +228,28 @@ func extractMonsterSounds(monster d1.MonsterData) error {
 	if monster.HasSpecialSound {
 		actions = append(actions, d1.MonsterActionSpecial)
 	}
+	script := &bytes.Buffer{}
+	fmt.Fprintf(script, "echo 'Extracting sounds for %s'\n", monster.Name)
+	// # Spitting Terror
+	//
+	//    ffmpeg -loglevel error -y -i diabdat/monsters/acid/acida1.wav ../mods/spark/sounds/monster/spitting_terror_attack_1.flac
+	//    ffmpeg -loglevel error -y -i diabdat/monsters/acid/acida2.wav ../mods/spark/sounds/monster/spitting_terror_attack_2.flac
+	//    ffmpeg -loglevel error -y -i diabdat/monsters/acid/acidh1.wav ../mods/spark/sounds/monster/spitting_terror_hit_1.flac
+	//    ffmpeg -loglevel error -y -i diabdat/monsters/acid/acidh2.wav ../mods/spark/sounds/monster/spitting_terror_hit_2.flac
+	//    ffmpeg -loglevel error -y -i diabdat/monsters/acid/acidd1.wav ../mods/spark/sounds/monster/spitting_terror_die_1.flac
+	//    ffmpeg -loglevel error -y -i diabdat/monsters/acid/acidd2.wav ../mods/spark/sounds/monster/spitting_terror_die_2.flac
+	//    ffmpeg -loglevel error -y -i diabdat/monsters/acid/acids1.wav ../mods/spark/sounds/monster/spitting_terror_special_1.flac
+	//    ffmpeg -loglevel error -y -i diabdat/monsters/acid/acids2.wav ../mods/spark/sounds/monster/spitting_terror_special_2.flac
 	for _, action := range actions {
 		for i := 1; i <= 2; i++ {
 			format := strings.ToLower(monster.WavPath)
 			format = strings.Replace(format, `\`, "/", -1)
 			format = strings.Replace(format, "%i", "%d", -1)
 			relWavPath := fmt.Sprintf(format, action.Rune(), i)
-			_ = relWavPath
-			//fmt.Println("wav:", relWavPath)
+			wavPath := filepath.Join("diabdat", relWavPath)
+			fmt.Fprintf(script, "ffmpeg -loglevel error -y -i %s ../mods/spark/sounds/monster/%s_%s_%d.flac\n", wavPath, monsterName(monster), action.String(), i)
 		}
 	}
+	fmt.Println(script)
 	return nil
 }
