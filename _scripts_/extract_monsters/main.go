@@ -15,6 +15,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/kr/pretty"
 	"github.com/mewkiz/pkg/pathutil"
 	"github.com/mewkiz/pkg/term"
 	"github.com/pkg/errors"
@@ -39,6 +40,16 @@ Flags:
 	flag.PrintDefaults()
 }
 
+// Global command line flags.
+var (
+	// def specifies whether to extract monster definitions.
+	def bool
+	// graphics specifies whether to extract monster graphics.
+	graphics bool
+	// sounds specifies whether to extract monster sounds.
+	sounds bool
+)
+
 func main() {
 	// Parse command line arguments.
 	var (
@@ -46,7 +57,10 @@ func main() {
 		quiet bool
 	)
 	flag.Usage = usage
+	flag.BoolVar(&def, "def", false, "extract monster definitions")
+	flag.BoolVar(&graphics, "graphics", false, "extract monster graphics")
 	flag.BoolVar(&quiet, "q", false, "suppress non-error messages")
+	flag.BoolVar(&sounds, "sounds", false, "extract monster sounds")
 	flag.Parse()
 	if flag.NArg() != 1 {
 		flag.Usage()
@@ -84,12 +98,21 @@ func extract(exePath string) error {
 func extractMonster(monster d1.MonsterData) error {
 	dbg.Printf("extracting assets of %q.", monster.Name)
 	// Extract monster graphics.
-	if err := extractMonsterGraphics(monster); err != nil {
-		return errors.WithStack(err)
+	if graphics {
+		if err := extractMonsterGraphics(monster); err != nil {
+			return errors.WithStack(err)
+		}
 	}
 	// Extract monster sounds.
-	if err := extractMonsterSounds(monster); err != nil {
-		return errors.WithStack(err)
+	if sounds {
+		if err := extractMonsterSounds(monster); err != nil {
+			return errors.WithStack(err)
+		}
+	}
+	if def {
+		if err := extractMonsterDef(monster); err != nil {
+			return errors.WithStack(err)
+		}
 	}
 	return nil
 }
@@ -128,7 +151,7 @@ func extractMonsterGraphics(monster d1.MonsterData) error {
 	//       _dump_/monsters/acid/acid{a,d,h,n,s,w}/*_1/*.png \
 	//       -geometry +0+0 -tile x8 \
 	//       -background none \
-	//       ../mods/spark/images/enemies/spitting_terror.png
+	//       ../mods/tristram/images/enemies/spitting_terror.png
 	script := &bytes.Buffer{}
 	fmt.Fprintf(script, "echo 'Extracting graphics for %s'\n", monster.Name)
 	script.WriteString("montage \\\n")
@@ -178,10 +201,270 @@ func extractMonsterGraphics(monster d1.MonsterData) error {
 	script.WriteString("\t-tile x8 \\\n")
 	script.WriteString("\t-background none \\\n")
 	dstName := monsterName(monster)
-	dstPath := fmt.Sprintf("../mods/spark/images/monster/%s.png", dstName)
+	dstPath := fmt.Sprintf("../mods/tristram/images/monster/%s.png", dstName)
 	fmt.Fprintf(script, "\t%s", dstPath)
 
 	fmt.Println(script)
+	return nil
+}
+
+// extractMonsterSounds extracts the sounds of the given monster.
+func extractMonsterSounds(monster d1.MonsterData) error {
+	actions := []d1.MonsterAction{
+		//d1.MonsterActionStand,
+		//d1.MonsterActionWalk,
+		d1.MonsterActionAttack,
+		d1.MonsterActionHit,
+		d1.MonsterActionDie,
+	}
+	if monster.HasSpecialSound {
+		actions = append(actions, d1.MonsterActionSpecial)
+	}
+	script := &bytes.Buffer{}
+	fmt.Fprintf(script, "echo 'Extracting sounds for %s'\n", monster.Name)
+	// # Spitting Terror
+	//
+	//    ffmpeg -loglevel error -y -i diabdat/monsters/acid/acida1.wav ../mods/tristram/sounds/monster/spitting_terror_attack_1.flac
+	//    ffmpeg -loglevel error -y -i diabdat/monsters/acid/acida2.wav ../mods/tristram/sounds/monster/spitting_terror_attack_2.flac
+	//    ffmpeg -loglevel error -y -i diabdat/monsters/acid/acidh1.wav ../mods/tristram/sounds/monster/spitting_terror_hit_1.flac
+	//    ffmpeg -loglevel error -y -i diabdat/monsters/acid/acidh2.wav ../mods/tristram/sounds/monster/spitting_terror_hit_2.flac
+	//    ffmpeg -loglevel error -y -i diabdat/monsters/acid/acidd1.wav ../mods/tristram/sounds/monster/spitting_terror_die_1.flac
+	//    ffmpeg -loglevel error -y -i diabdat/monsters/acid/acidd2.wav ../mods/tristram/sounds/monster/spitting_terror_die_2.flac
+	//    ffmpeg -loglevel error -y -i diabdat/monsters/acid/acids1.wav ../mods/tristram/sounds/monster/spitting_terror_special_1.flac
+	//    ffmpeg -loglevel error -y -i diabdat/monsters/acid/acids2.wav ../mods/tristram/sounds/monster/spitting_terror_special_2.flac
+	for _, action := range actions {
+		for i := 1; i <= 2; i++ {
+			format := strings.ToLower(monster.WavPath)
+			format = strings.Replace(format, `\`, "/", -1)
+			format = strings.Replace(format, "%i", "%d", -1)
+			relWavPath := fmt.Sprintf(format, action.Rune(), i)
+			wavPath := filepath.Join("diabdat", relWavPath)
+			fmt.Fprintf(script, "ffmpeg -loglevel error -y -i %s ../mods/tristram/sounds/monster/%s_%s_%d.flac\n", wavPath, monsterName(monster), action.String(), i)
+		}
+	}
+	fmt.Println(script)
+	return nil
+}
+
+// extractMonsterDef extracts the definition of the given monster.
+func extractMonsterDef(monster d1.MonsterData) error {
+	pretty.Println("monster:", monster)
+
+	// Create enemies/base/spitting_terror.txt
+	//    sfx_attack=swing,sounds/monster/spitting_terror_attack_1.flac
+	//    sfx_attack=swing,sounds/monster/spitting_terror_attack_2.flac
+	//    sfx_attack=shoot,sounds/monster/spitting_terror_special_1.flac
+	//    sfx_attack=shoot,sounds/monster/spitting_terror_special_2.flac
+	//    sfx_attack=cast,sounds/monster/spitting_terror_special_1.flac
+	//    sfx_attack=cast,sounds/monster/spitting_terror_special_2.flac
+	//    sfx_block=sounds/powers/block.ogg
+	//    sfx_critdie=sounds/monster/spitting_terror_die_1.flac
+	//    sfx_critdie=sounds/monster/spitting_terror_die_2.flac
+	//    sfx_die=sounds/monster/spitting_terror_die_1.flac
+	//    sfx_die=sounds/monster/spitting_terror_die_2.flac
+	//    sfx_hit=sounds/monster/spitting_terror_hit_1.flac
+	//    sfx_hit=sounds/monster/spitting_terror_hit_2.flac
+
+	// attack
+	buf := &bytes.Buffer{}
+	name := monsterName(monster)
+	fmt.Fprintf(buf, "sfx_attack=swing,sounds/monster/%s_attack_1.flac\n", name)
+	fmt.Fprintf(buf, "sfx_attack=swing,sounds/monster/%s_attack_2.flac\n", name)
+	// special
+	if monster.HasSpecialSound {
+		fmt.Fprintf(buf, "sfx_attack=shoot,sounds/monster/%s_special_1.flac\n", name)
+		fmt.Fprintf(buf, "sfx_attack=shoot,sounds/monster/%s_special_2.flac\n", name)
+		fmt.Fprintf(buf, "sfx_attack=cast,sounds/monster/%s_special_1.flac\n", name)
+		fmt.Fprintf(buf, "sfx_attack=cast,sounds/monster/%s_special_2.flac\n", name)
+	}
+	// block
+
+	// TODO: figure out if monsters can block.
+	//    sfx_block=sounds/powers/block.ogg
+	fmt.Fprintf(buf, "sfx_block=soundfx/powers/block.ogg\n")
+	// hit
+	fmt.Fprintf(buf, "sfx_hit=sounds/monster/%s_hit_1.flac\n", name)
+	fmt.Fprintf(buf, "sfx_hit=sounds/monster/%s_hit_2.flac\n", name)
+	// die
+	fmt.Fprintf(buf, "sfx_die=sounds/monster/%s_die_1.flac\n", name)
+	fmt.Fprintf(buf, "sfx_die=sounds/monster/%s_die_2.flac\n", name)
+
+	//    animations=animations/monster/spitting_terror.txt
+	buf.WriteString("\n")
+	fmt.Fprintf(buf, "animations=animations/monster/%s.txt\n", name)
+
+	// TODO: figure out what melee_range and thread_range do and if thread_range
+	// may cause performance problems when set too high.
+	buf.WriteString("\n")
+	buf.WriteString("melee_range=1.2\n")
+	buf.WriteString("threat_range=600.0\n")
+
+	// Store output.
+	basePath := fmt.Sprintf("../mods/tristram/enemies/base/%s.txt", name)
+	if err := ioutil.WriteFile(basePath, buf.Bytes(), 0644); err != nil {
+		return errors.WithStack(err)
+	}
+
+	// Create enemies/spitting_terror.txt
+	buf = &bytes.Buffer{}
+	fmt.Fprintf(buf, "INCLUDE enemies/base/%s.txt\n", name)
+	buf.WriteString("\n")
+	fmt.Fprintf(buf, "name=%s\n", monster.Name)
+	fmt.Fprintf(buf, "level=%d\n", monster.Level)
+	fmt.Fprintf(buf, "categories=%s,dungeon\n", name)
+	fmt.Fprintf(buf, "rarity=common\n")
+	fmt.Fprintf(buf, "xp=%d\n", monster.Exp)
+	buf.WriteString("\n")
+
+	hp := monster.MinHP + (monster.MaxHP-monster.MinHP)/2
+	buf.WriteString("# combat stats\n")
+	fmt.Fprintf(buf, "stat=hp,%d\n", hp)
+	// TODO: set speed from monster.Rate.
+	fmt.Fprintf(buf, "speed=2\n")
+	fmt.Fprintf(buf, "turn_delay=400ms\n")
+	fmt.Fprintf(buf, "chance_pursue=10\n")
+	buf.WriteString("\n")
+	fmt.Fprintf(buf, "power=melee,1,2\n")
+	fmt.Fprintf(buf, "power=ranged,32,2\n")
+	buf.WriteString("\n")
+	fmt.Fprintf(buf, "stat=accuracy,69\n")
+	fmt.Fprintf(buf, "stat=avoidance,19\n")
+	buf.WriteString("\n")
+	fmt.Fprintf(buf, "stat=dmg_melee_min,%d\n", monster.MinDamage)
+	fmt.Fprintf(buf, "stat=dmg_melee_max,%d\n", monster.MaxDamage)
+	if monster.HasSpecialGraphic && monster.MinDamageSpecial != 0 {
+		fmt.Fprintf(buf, "stat=dmg_ranged_min,%d\n", monster.MinDamageSpecial)
+		fmt.Fprintf(buf, "stat=dmg_ranged_max,%d\n", monster.MaxDamageSpecial)
+	}
+	fmt.Fprintf(buf, "cooldown=1s\n")
+	buf.WriteString("\n")
+	buf.WriteString("# loot\n")
+	fmt.Fprintf(buf, "loot=loot/leveled_low.txt\n")
+
+	// Store output.
+	defPath := fmt.Sprintf("../mods/tristram/enemies/%s.txt", name)
+	if err := ioutil.WriteFile(defPath, buf.Bytes(), 0644); err != nil {
+		return errors.WithStack(err)
+	}
+
+	// Create animations/monster/spitting_terror.txt
+	buf = &bytes.Buffer{}
+	//    image=images/monster/spitting_terror.png
+	//    render_size=128,96
+	//    render_offset=64,84
+	//
+	//    [swing]
+	//    position=0
+	//    frames=12
+	//    duration=600ms
+	//    type=play_once
+	//
+	//    [die]
+	//    position=12
+	//    frames=24
+	//    duration=1200ms
+	//    type=play_once
+	//
+	//    [hit]
+	//    position=36
+	//    frames=8
+	//    duration=400ms
+	//    type=play_once
+	//
+	//    [stance]
+	//    position=44
+	//    frames=13
+	//    duration=650ms
+	//    type=back_forth
+	//
+	//    [shoot]
+	//    position=57
+	//    frames=12
+	//    duration=600ms
+	//    type=play_once
+	//
+	//    [run]
+	//    position=69
+	//    frames=8
+	//    duration=400ms
+	//    type=looped
+
+	fmt.Fprintf(buf, "image=images/monster/%s.png\n", name)
+	// TODO: figure out how to get the value of height.
+	frameHeight := 96
+	fmt.Fprintf(buf, "render_size=%d,%d\n", monster.FrameWidth, frameHeight)
+	// TODO: set offset to
+	fmt.Fprintf(buf, "render_offset=%d,%d\n", monster.FrameWidth/2, frameHeight-16)
+	buf.WriteString("\n")
+
+	// stand
+	position := int32(0)
+	nframes := monster.NFrames[d1.MonsterActionStand]
+	// Diablo 1 runs at 20 FPS; thus 50ms per frame.
+	duration := 50 * nframes
+	fmt.Fprintf(buf, "[stance]\n")
+	fmt.Fprintf(buf, "position=%d\n", position)
+	fmt.Fprintf(buf, "frames=%d\n", nframes)
+	fmt.Fprintf(buf, "duration=%dms\n", duration)
+	fmt.Fprintf(buf, "type=back_forth\n")
+	position += nframes
+
+	// walk
+	nframes = monster.NFrames[d1.MonsterActionWalk]
+	duration = 50 * nframes
+	fmt.Fprintf(buf, "[run]\n")
+	fmt.Fprintf(buf, "position=%d\n", position)
+	fmt.Fprintf(buf, "frames=%d\n", nframes)
+	fmt.Fprintf(buf, "duration=%dms\n", nframes)
+	fmt.Fprintf(buf, "type=looped\n")
+	position += nframes
+
+	// attack
+	nframes = monster.NFrames[d1.MonsterActionAttack]
+	duration = 50 * nframes
+	fmt.Fprintf(buf, "[swing]\n")
+	fmt.Fprintf(buf, "position=%d\n", position)
+	fmt.Fprintf(buf, "frames=%d\n", nframes)
+	fmt.Fprintf(buf, "duration=%dms\n", nframes)
+	fmt.Fprintf(buf, "type=play_once\n")
+	position += nframes
+
+	// hit
+	nframes = monster.NFrames[d1.MonsterActionHit]
+	duration = 50 * nframes
+	fmt.Fprintf(buf, "[hit]\n")
+	fmt.Fprintf(buf, "position=%d\n", position)
+	fmt.Fprintf(buf, "frames=%d\n", nframes)
+	fmt.Fprintf(buf, "duration=%dms\n", nframes)
+	fmt.Fprintf(buf, "type=play_once\n")
+	position += nframes
+
+	// die
+	nframes = monster.NFrames[d1.MonsterActionDie]
+	duration = 50 * nframes
+	fmt.Fprintf(buf, "[die]\n")
+	fmt.Fprintf(buf, "position=%d\n", position)
+	fmt.Fprintf(buf, "frames=%d\n", nframes)
+	fmt.Fprintf(buf, "duration=%dms\n", nframes)
+	fmt.Fprintf(buf, "type=play_once\n")
+	position += nframes
+
+	// special
+	nframes = monster.NFrames[d1.MonsterActionSpecial]
+	if monster.HasSpecialGraphic {
+		duration = 50 * nframes
+		fmt.Fprintf(buf, "[shoot]\n")
+		fmt.Fprintf(buf, "position=%d\n", position)
+		fmt.Fprintf(buf, "frames=%d\n", nframes)
+		fmt.Fprintf(buf, "duration=%dms\n", nframes)
+		fmt.Fprintf(buf, "type=play_once\n")
+	}
+
+	animPath := fmt.Sprintf("../mods/tristram/animations/monster/%s.txt", name)
+	if err := ioutil.WriteFile(animPath, buf.Bytes(), 0644); err != nil {
+		return errors.WithStack(err)
+	}
+
 	return nil
 }
 
@@ -214,42 +497,4 @@ func snakeCase(name string) string {
 	// same graphic.
 	s := strings.ToLower(name)
 	return strings.Replace(s, " ", "_", -1)
-}
-
-// extractMonsterSounds extracts the sounds of the given monster.
-func extractMonsterSounds(monster d1.MonsterData) error {
-	actions := []d1.MonsterAction{
-		//d1.MonsterActionStand,
-		//d1.MonsterActionWalk,
-		d1.MonsterActionAttack,
-		d1.MonsterActionHit,
-		d1.MonsterActionDie,
-	}
-	if monster.HasSpecialSound {
-		actions = append(actions, d1.MonsterActionSpecial)
-	}
-	script := &bytes.Buffer{}
-	fmt.Fprintf(script, "echo 'Extracting sounds for %s'\n", monster.Name)
-	// # Spitting Terror
-	//
-	//    ffmpeg -loglevel error -y -i diabdat/monsters/acid/acida1.wav ../mods/spark/sounds/monster/spitting_terror_attack_1.flac
-	//    ffmpeg -loglevel error -y -i diabdat/monsters/acid/acida2.wav ../mods/spark/sounds/monster/spitting_terror_attack_2.flac
-	//    ffmpeg -loglevel error -y -i diabdat/monsters/acid/acidh1.wav ../mods/spark/sounds/monster/spitting_terror_hit_1.flac
-	//    ffmpeg -loglevel error -y -i diabdat/monsters/acid/acidh2.wav ../mods/spark/sounds/monster/spitting_terror_hit_2.flac
-	//    ffmpeg -loglevel error -y -i diabdat/monsters/acid/acidd1.wav ../mods/spark/sounds/monster/spitting_terror_die_1.flac
-	//    ffmpeg -loglevel error -y -i diabdat/monsters/acid/acidd2.wav ../mods/spark/sounds/monster/spitting_terror_die_2.flac
-	//    ffmpeg -loglevel error -y -i diabdat/monsters/acid/acids1.wav ../mods/spark/sounds/monster/spitting_terror_special_1.flac
-	//    ffmpeg -loglevel error -y -i diabdat/monsters/acid/acids2.wav ../mods/spark/sounds/monster/spitting_terror_special_2.flac
-	for _, action := range actions {
-		for i := 1; i <= 2; i++ {
-			format := strings.ToLower(monster.WavPath)
-			format = strings.Replace(format, `\`, "/", -1)
-			format = strings.Replace(format, "%i", "%d", -1)
-			relWavPath := fmt.Sprintf(format, action.Rune(), i)
-			wavPath := filepath.Join("diabdat", relWavPath)
-			fmt.Fprintf(script, "ffmpeg -loglevel error -y -i %s ../mods/spark/sounds/monster/%s_%s_%d.flac\n", wavPath, monsterName(monster), action.String(), i)
-		}
-	}
-	fmt.Println(script)
-	return nil
 }
