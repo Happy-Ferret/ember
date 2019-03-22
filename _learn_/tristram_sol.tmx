@@ -9,7 +9,7 @@
   <image source="../tiled/tiled_collision.png" width="512" height="160"/>
  </tileset>
  <tileset firstgid="41" name="tristram" tilewidth="64" tileheight="256" tilecount="1264" columns="79">
-  <image source="../mods/spark/images/tilesets/tileset_tristram.png" width="5056" height="4096"/>
+  <image source="../mods/ember/images/tilesets/tileset_tristram.png" width="5056" height="4096"/>
  </tileset>
  <layer name="background" width="96" height="96">
   <data encoding="csv">

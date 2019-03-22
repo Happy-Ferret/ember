@@ -15,7 +15,6 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/kr/pretty"
 	"github.com/mewkiz/pkg/pathutil"
 	"github.com/mewkiz/pkg/term"
 	"github.com/pkg/errors"
@@ -90,7 +89,6 @@ func extract(exePath string) error {
 			return errors.WithStack(err)
 		}
 	}
-	//pretty.Println(exe.Monsters)
 	return nil
 }
 
@@ -224,14 +222,14 @@ func extractMonsterSounds(monster d1.MonsterData) error {
 	fmt.Fprintf(script, "echo 'Extracting sounds for %s'\n", monster.Name)
 	// # Spitting Terror
 	//
-	//    ffmpeg -loglevel error -y -i diabdat/monsters/acid/acida1.wav ../mods/tristram/sounds/monster/spitting_terror_attack_1.flac
-	//    ffmpeg -loglevel error -y -i diabdat/monsters/acid/acida2.wav ../mods/tristram/sounds/monster/spitting_terror_attack_2.flac
-	//    ffmpeg -loglevel error -y -i diabdat/monsters/acid/acidh1.wav ../mods/tristram/sounds/monster/spitting_terror_hit_1.flac
-	//    ffmpeg -loglevel error -y -i diabdat/monsters/acid/acidh2.wav ../mods/tristram/sounds/monster/spitting_terror_hit_2.flac
-	//    ffmpeg -loglevel error -y -i diabdat/monsters/acid/acidd1.wav ../mods/tristram/sounds/monster/spitting_terror_die_1.flac
-	//    ffmpeg -loglevel error -y -i diabdat/monsters/acid/acidd2.wav ../mods/tristram/sounds/monster/spitting_terror_die_2.flac
-	//    ffmpeg -loglevel error -y -i diabdat/monsters/acid/acids1.wav ../mods/tristram/sounds/monster/spitting_terror_special_1.flac
-	//    ffmpeg -loglevel error -y -i diabdat/monsters/acid/acids2.wav ../mods/tristram/sounds/monster/spitting_terror_special_2.flac
+	//    ffmpeg -loglevel error -y -i diabdat/monsters/acid/acida1.wav ../mods/tristram/sounds/monster/spitting_terror_attack_1.ogg
+	//    ffmpeg -loglevel error -y -i diabdat/monsters/acid/acida2.wav ../mods/tristram/sounds/monster/spitting_terror_attack_2.ogg
+	//    ffmpeg -loglevel error -y -i diabdat/monsters/acid/acidh1.wav ../mods/tristram/sounds/monster/spitting_terror_hit_1.ogg
+	//    ffmpeg -loglevel error -y -i diabdat/monsters/acid/acidh2.wav ../mods/tristram/sounds/monster/spitting_terror_hit_2.ogg
+	//    ffmpeg -loglevel error -y -i diabdat/monsters/acid/acidd1.wav ../mods/tristram/sounds/monster/spitting_terror_die_1.ogg
+	//    ffmpeg -loglevel error -y -i diabdat/monsters/acid/acidd2.wav ../mods/tristram/sounds/monster/spitting_terror_die_2.ogg
+	//    ffmpeg -loglevel error -y -i diabdat/monsters/acid/acids1.wav ../mods/tristram/sounds/monster/spitting_terror_special_1.ogg
+	//    ffmpeg -loglevel error -y -i diabdat/monsters/acid/acids2.wav ../mods/tristram/sounds/monster/spitting_terror_special_2.ogg
 	for _, action := range actions {
 		for i := 1; i <= 2; i++ {
 			format := strings.ToLower(monster.WavPath)
@@ -239,7 +237,7 @@ func extractMonsterSounds(monster d1.MonsterData) error {
 			format = strings.Replace(format, "%i", "%d", -1)
 			relWavPath := fmt.Sprintf(format, action.Rune(), i)
 			wavPath := filepath.Join("diabdat", relWavPath)
-			fmt.Fprintf(script, "ffmpeg -loglevel error -y -i %s ../mods/tristram/sounds/monster/%s_%s_%d.flac\n", wavPath, monsterName(monster), action.String(), i)
+			fmt.Fprintf(script, "ffmpeg -loglevel error -y -i %s ../mods/tristram/sounds/monster/%s_%s_%d.ogg\n", wavPath, monsterName(monster), action.String(), i)
 		}
 	}
 	fmt.Println(script)
@@ -248,34 +246,29 @@ func extractMonsterSounds(monster d1.MonsterData) error {
 
 // extractMonsterDef extracts the definition of the given monster.
 func extractMonsterDef(monster d1.MonsterData) error {
-	pretty.Println("monster:", monster)
-
 	// Create enemies/base/spitting_terror.txt
-	//    sfx_attack=swing,sounds/monster/spitting_terror_attack_1.flac
-	//    sfx_attack=swing,sounds/monster/spitting_terror_attack_2.flac
-	//    sfx_attack=shoot,sounds/monster/spitting_terror_special_1.flac
-	//    sfx_attack=shoot,sounds/monster/spitting_terror_special_2.flac
-	//    sfx_attack=cast,sounds/monster/spitting_terror_special_1.flac
-	//    sfx_attack=cast,sounds/monster/spitting_terror_special_2.flac
+	//    sfx_attack=swing,sounds/monster/spitting_terror_attack_1.ogg
+	//    sfx_attack=swing,sounds/monster/spitting_terror_attack_2.ogg
+	//    sfx_attack=shoot,sounds/monster/spitting_terror_special_1.ogg
+	//    sfx_attack=shoot,sounds/monster/spitting_terror_special_2.ogg
+	//    sfx_attack=cast,sounds/monster/spitting_terror_special_1.ogg
+	//    sfx_attack=cast,sounds/monster/spitting_terror_special_2.ogg
 	//    sfx_block=sounds/powers/block.ogg
-	//    sfx_critdie=sounds/monster/spitting_terror_die_1.flac
-	//    sfx_critdie=sounds/monster/spitting_terror_die_2.flac
-	//    sfx_die=sounds/monster/spitting_terror_die_1.flac
-	//    sfx_die=sounds/monster/spitting_terror_die_2.flac
-	//    sfx_hit=sounds/monster/spitting_terror_hit_1.flac
-	//    sfx_hit=sounds/monster/spitting_terror_hit_2.flac
+	//    sfx_critdie=sounds/monster/spitting_terror_die_1.ogg
+	//    sfx_critdie=sounds/monster/spitting_terror_die_2.ogg
+	//    sfx_die=sounds/monster/spitting_terror_die_1.ogg
+	//    sfx_die=sounds/monster/spitting_terror_die_2.ogg
+	//    sfx_hit=sounds/monster/spitting_terror_hit_1.ogg
+	//    sfx_hit=sounds/monster/spitting_terror_hit_2.ogg
 
 	// attack
 	buf := &bytes.Buffer{}
 	name := monsterName(monster)
-	fmt.Fprintf(buf, "sfx_attack=swing,sounds/monster/%s_attack_1.flac\n", name)
-	fmt.Fprintf(buf, "sfx_attack=swing,sounds/monster/%s_attack_2.flac\n", name)
+	fmt.Fprintf(buf, "sfx_attack=swing,sounds/monster/%s_attack_1.ogg\n", name)
 	// special
 	if monster.HasSpecialSound {
-		fmt.Fprintf(buf, "sfx_attack=shoot,sounds/monster/%s_special_1.flac\n", name)
-		fmt.Fprintf(buf, "sfx_attack=shoot,sounds/monster/%s_special_2.flac\n", name)
-		fmt.Fprintf(buf, "sfx_attack=cast,sounds/monster/%s_special_1.flac\n", name)
-		fmt.Fprintf(buf, "sfx_attack=cast,sounds/monster/%s_special_2.flac\n", name)
+		fmt.Fprintf(buf, "sfx_attack=shoot,sounds/monster/%s_special_1.ogg\n", name)
+		fmt.Fprintf(buf, "sfx_attack=cast,sounds/monster/%s_special_1.ogg\n", name)
 	}
 	// block
 
@@ -283,11 +276,9 @@ func extractMonsterDef(monster d1.MonsterData) error {
 	//    sfx_block=sounds/powers/block.ogg
 	fmt.Fprintf(buf, "sfx_block=soundfx/powers/block.ogg\n")
 	// hit
-	fmt.Fprintf(buf, "sfx_hit=sounds/monster/%s_hit_1.flac\n", name)
-	fmt.Fprintf(buf, "sfx_hit=sounds/monster/%s_hit_2.flac\n", name)
+	fmt.Fprintf(buf, "sfx_hit=sounds/monster/%s_hit_1.ogg\n", name)
 	// die
-	fmt.Fprintf(buf, "sfx_die=sounds/monster/%s_die_1.flac\n", name)
-	fmt.Fprintf(buf, "sfx_die=sounds/monster/%s_die_2.flac\n", name)
+	fmt.Fprintf(buf, "sfx_die=sounds/monster/%s_die_1.ogg\n", name)
 
 	//    animations=animations/monster/spitting_terror.txt
 	buf.WriteString("\n")

@@ -220,7 +220,7 @@ const tmxData = `
   <image source="../tiled_collision.png" width="512" height="160"/>
  </tileset>
  <tileset firstgid="{{ .FirstID }}" name="{{ .Title }}" tilewidth="64" tileheight="{{ .TileHeight }}">
-  <image source="../../mods/spark/images/tilesets/{{ .Tileset }}.png" width="{{ .TilesetWidth }}" height="{{ .TilesetHeight }}"/>
+  <image source="../../mods/ember/images/tilesets/{{ .Tileset }}.png" width="{{ .TilesetWidth }}" height="{{ .TilesetHeight }}"/>
  </tileset>
  <layer name="background" width="{{ .MapWidth }}" height="{{ .MapWidth }}">
   <data encoding="csv">

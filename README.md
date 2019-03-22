@@ -1,4 +1,4 @@
-# Spark
+# Ember
 
 The aim of this project is to get Diablo 1 running on the FLARE game engine.
 
@@ -29,8 +29,8 @@ pacman -S sdl2 sdl2_image sdl2_mixer sdl2_ttf cmake ffmpeg
 git clone https://github.com/clintbellanger/flare-engine
 git clone https://github.com/clintbellanger/flare-game
 
-# Clone the Spark game.
-git clone https://github.com/sanctuary/spark
+# Clone the Ember game.
+git clone https://github.com/sanctuary/ember
 
 # Build FLARE engine.
 cd flare-engine
@@ -38,7 +38,7 @@ cmake .
 make
 
 # Add symlinks to default, fantasycore and alpha_demo mods.
-cd ../spark/mods
+cd ../ember/mods
 ln -s ../../flare-engine/mods/default
 ln -s ../../flare-game/mods/fantasycore
 ln -s ../../flare-game/mods/alpha_demo
@@ -51,9 +51,9 @@ ln -s ../flare-engine/flare
 ```bash
 # Get assets conversion tools.
 go get github.com/sanctuary/formats/...
-go get github.com/sanctuary/spark/_scripts_/...
+go get github.com/sanctuary/ember/_scripts_/...
 
-# Create "spark/_assets_" directory.
+# Create "ember/_assets_" directory.
 mkdir _assets_
 cd _assets_
 
@@ -75,9 +75,9 @@ cd ..
 ### Run the game
 
 ```bash
-# Standing in the spark directory, run `./flare --mods=spark`
+# Standing in the ember directory, run `./flare --mods=ember`
 # to start the game.
-./flare --mods=spark
+./flare --mods=ember
 ```
 
 ## Public domain
