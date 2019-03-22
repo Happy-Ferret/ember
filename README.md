@@ -58,13 +58,10 @@ mkdir _assets_
 cd _assets_
 
 # Extract diabdat.mpq to the "_assets_/diabdat" directory.
-#
-# #############################################################
-# ### NOTE: This step requires manual intervention for now. ###
-# #############################################################
-#
-# You may use Ladislav Zezula's MPQ Editor to extract the
-# contents of diabdat.mpq.
+echo "Please copy diabdat.mpq to the _assets_ directory."
+go get github.com/mewrnd/blizzconv/cmd/mpqfix
+mpq -m diabdat.mpq -dir diabdat
+mpqfix -mpqdump diabdat/
 
 # Extract game assets. Takes roughly 15 minutes.
 opensourceami -o extract_assets.sh
