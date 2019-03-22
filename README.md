@@ -59,6 +59,7 @@ cd _assets_
 
 # Extract diabdat.mpq to the "_assets_/diabdat" directory.
 echo "Please copy diabdat.mpq to the _assets_ directory."
+go get github.com/sanctuary/mpq
 go get github.com/mewrnd/blizzconv/cmd/mpqfix
 mpq -m diabdat.mpq -dir diabdat
 mpqfix -mpqdump diabdat/
